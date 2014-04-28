@@ -1,4 +1,14 @@
-garbage-code
+Personal garbage-code
 ============
 
-And here is where I storage all my junk code, which helps me understanding a lot of things
+And here it is my collection of junk code, which helps me understanding many things, all of them related directly or indirectly with the dictyBase. 
+
+The main languages are:
+
+### Perl
+
+* Perl DBI
+
+### SQL
+
+
