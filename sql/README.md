@@ -1,7 +1,7 @@
 # SQL statements
 
 
-Select all the DDB_G IDS and protein alternative names:
+- Select all the DDB_G IDS and protein alternative names:
 
 ```
 SELECT dbxref.accession gene_id, wm_concat(syn.name) gsyn
@@ -12,7 +12,8 @@ LEFT JOIN cgm_chado.synonym_ syn on syn.synonym_id=fsyn.SYNONYM_ID
 WHERE dbxref.accession LIKE 'DDB_G%'
 GROUP BY dbxref.ACCESSION
 ```
-Select GENE_NAME and DDB_G_ID, given the gene name
+
+- Select GENE_NAME and DDB_G_ID, given the gene name
 
 ```
 SELECT gene.name AS GENE_NAME, dbx.accession AS DDB_G_ID
@@ -21,7 +22,7 @@ INNER JOIN cgm_chado.dbxref dbx ON gene.dbxref_id = dbx.dbxref_id
 WHERE gene.name = 'fam21'
 ```
 
-1--Gene name, primary feature id, and the gene product
+- Gene name, primary feature id, and the gene product
 
 ```
 SELECT g.gene_name, g.primary_feature_dictybaseid, gp.gene_product
@@ -31,16 +32,7 @@ INNER JOIN cgm_chado.v_gene_dictybaseid g      ON 	lgp.locus_no = g.gene_feature
 ORDER BY gp.gene_product
 ```
 
-V_GENE_DICTYBASEID
-V_GENE_FEATURES
-
-```
-select gene_feature_id from v_gene_dictybaseid
-select feature_id from v_gene_features
-```
-
-
-2--The gene name and DDB_G_ID
+- The gene name and DDB_G_ID
 
 ```
 SELECT g.name  AS GENE_NAME, dx.accession AS DDB_G_ID
@@ -51,7 +43,7 @@ INNER JOIN cgm_chado.feature f 			ON f.dbxref_id = g.dbxref_id
 WHERE o.common_name = 'dicty'
 ```
 
--- 1 and 2 together!
+- 1 and 2 together!
 
 ```
 SELECT dx.accession AS DDB_G_ID, d.gene_name, d.primary_feature_dictybaseid, gp.gene_product
@@ -66,7 +58,7 @@ WHERE o.common_name = 'dicty'
 ORDER BY dx.accession, gp.gene_product
 ```
 
--- Mapping DDB_G_ID to UNIPROT id
+- Mapping DDB_G_ID to UNIPROT id
 
 ```
 SELECT dbxref.accession uniprot,gxref.accession geneid FROM dbxref
@@ -100,5 +92,30 @@ AND
 gtype.name = 'gene'
 AND 
 db.name = 'DB:SwissProt'
+```
+
+- Split genes
+
+```
+WITH split_replaced AS( SELECT dbxref.accession acc 
+	  FROM cgm_chado.featureprop fprop 
+	  JOIN cgm_chado.cvterm on cvterm.cvterm_id=fprop.type_id 
+	  JOIN cgm_chado.feature on feature.feature_id=fprop.feature_id 
+	  JOIN cgm_chado.cvterm ftype on ftype.cvterm_id=feature.type_id 
+	  JOIN cgm_chado.dbxref on feature.dbxref_id=dbxref.dbxref_id 
+	 WHERE ftype.name = 'gene' 
+	   AND cvterm.name = 'replaced by' 
+	   AND feature.is_deleted = 1 
+	   AND feature.uniquename like 'DDB_G%'
+	 GROUP BY dbxref.accession
+	HAVING count(to_char(fprop.value)) > 1  )
+SELECT to_char(fprop.value) split_id 
+  FROM cgm_chado.feature 
+  JOIN cgm_chado.featureprop fprop on fprop.feature_id=feature.feature_id 
+  JOIN cgm_chado.dbxref on dbxref.dbxref_id=feature.dbxref_id 
+  JOIN cgm_chado.cvterm on cvterm.cvterm_id=fprop.type_id 
+  JOIN split_replaced on split_replaced.acc=dbxref.accession 
+ WHERE cvterm.name = 'replaced by' 
+   AND fprop.value like 'DDB_G%'
 ```
 
