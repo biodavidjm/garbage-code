@@ -58,40 +58,27 @@ WHERE o.common_name = 'dicty'
 ORDER BY dx.accession, gp.gene_product
 ```
 
-- Mapping DDB_G_ID to UNIPROT id
+- Mapping DDB_G_ID to UNIPROT id, entire list:
 
 ```
-SELECT dbxref.accession uniprot,gxref.accession geneid FROM dbxref
-JOIN db 
-ON db.db_id = dbxref.db_id
-JOIN feature_dbxref fxref ON
-fxref.dbxref_id = dbxref.dbxref_id
-JOIN feature polypeptide ON 
-polypeptide.feature_id = fxref.feature_id
-JOIN feature_relationship frel 
-ON polypeptide.feature_id = frel.subject_id
-JOIN feature transcript 
-ON transcript.feature_id = frel.object_id
-JOIN feature_relationship frel2 
-ON frel2.subject_id = transcript.feature_id
-JOIN feature gene 
-ON frel2.object_id = gene.feature_id
-JOIN cvterm ptype
-ON ptype.cvterm_id = polypeptide.type_id
-JOIN cvterm mtype 
-ON mtype.cvterm_id = transcript.type_id
-JOIN cvterm gtype 
-ON gtype.cvterm_id = gene.type_id
-JOIN dbxref gxref 
-ON gene.dbxref_id = gxref.dbxref_id
+SELECT gxref.accession geneid, dbxref.accession uniprot
+FROM dbxref
+	JOIN db ON db.db_id = dbxref.db_id
+	JOIN feature_dbxref fxref ON fxref.dbxref_id = dbxref.dbxref_id
+	JOIN feature polypeptide ON polypeptide.feature_id = fxref.feature_id
+	JOIN feature_relationship frel ON polypeptide.feature_id = frel.subject_id
+	JOIN feature transcript ON transcript.feature_id = frel.object_id
+	JOIN feature_relationship frel2 ON frel2.subject_id = transcript.feature_id
+	JOIN feature gene ON frel2.object_id = gene.feature_id
+	JOIN cvterm ptype ON ptype.cvterm_id = polypeptide.type_id
+	JOIN cvterm mtype ON mtype.cvterm_id = transcript.type_id
+	JOIN cvterm gtype ON gtype.cvterm_id = gene.type_id
+	JOIN dbxref gxref ON gene.dbxref_id = gxref.dbxref_id
 WHERE 
-ptype.name = 'polypeptide'
-AND
-mtype.name = 'mRNA'
-AND
-gtype.name = 'gene'
-AND 
-db.name = 'DB:SwissProt'
+	ptype.name = 'polypeptide'
+	AND	mtype.name = 'mRNA'
+	AND	gtype.name = 'gene'
+	AND	db.name = 'DB:SwissProt'
 ```
 
 - Split genes

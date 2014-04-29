@@ -42,7 +42,7 @@ select   t.table_name
     left join user_cons_columns cc
        on (cc.table_name = t.table_name and
            cc.column_name = t.column_name)
-            where t.column_name in (\'$column')
+            where t.column_name in ('$column')
 
 ";
 
@@ -101,7 +101,7 @@ for my $tables (sort keys %hashtables)
 #pppppppppppppppppppppppppppppppppppppppppppprint
 
 $dbhchado->disconnect();
-print $c." tables has column $columnn\n";
+print $c." tables has column $column\n";
 exit;
 
 

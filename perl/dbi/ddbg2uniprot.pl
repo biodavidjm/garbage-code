@@ -85,17 +85,17 @@ say "Total number of DDB_G_ID: " . $unique;
 # # Just in case need to know the number of curated genes
 # my $statement_curated = <<"STATEMENT";
 # SELECT gene.name cgene_name, gacc.accession cgene_id
-#    FROM cgm_chado.feature 
-# 	   JOIN feature_dbxref fxref ON fxref.feature_id = feature.feature_id 
-# 	   JOIN cgm_chado.dbxref ON dbxref.dbxref_id = fxref.dbxref_id 
-# 	   JOIN cgm_chado.db ON db.db_id = dbxref.db_id 
-# 	   JOIN cgm_chado.cvterm ON cvterm.cvterm_id = feature.TYPE_ID 
-# 	   JOIN cgm_chado.feature_relationship frel ON frel.subject_id = feature.feature_id 
+#    FROM cgm_chado.feature
+# 	   JOIN feature_dbxref fxref ON fxref.feature_id = feature.feature_id
+# 	   JOIN cgm_chado.dbxref ON dbxref.dbxref_id = fxref.dbxref_id
+# 	   JOIN cgm_chado.db ON db.db_id = dbxref.db_id
+# 	   JOIN cgm_chado.cvterm ON cvterm.cvterm_id = feature.TYPE_ID
+# 	   JOIN cgm_chado.feature_relationship frel ON frel.subject_id = feature.feature_id
 # 	   JOIN cgm_chado.feature gene ON gene.feature_id = frel.object_id
-# 	   JOIN cgm_chado.dbxref gacc ON gene.dbxref_id=gacc.dbxref_id 
-# 	   JOIN cgm_chado.cvterm gtype ON gtype.cvterm_id = gene.TYPE_ID 
-# 	   JOIN cgm_chado.feature_relationship frel2 ON frel2.object_id = feature.feature_id 
-# 	   JOIN cgm_chado.feature poly ON poly.feature_id = frel2.subject_id 
+# 	   JOIN cgm_chado.dbxref gacc ON gene.dbxref_id=gacc.dbxref_id
+# 	   JOIN cgm_chado.cvterm gtype ON gtype.cvterm_id = gene.TYPE_ID
+# 	   JOIN cgm_chado.feature_relationship frel2 ON frel2.object_id = feature.feature_id
+# 	   JOIN cgm_chado.feature poly ON poly.feature_id = frel2.subject_id
 # 	   JOIN cgm_chado.cvterm ptype ON ptype.cvterm_id = poly.TYPE_ID
 #    WHERE cvterm.name = 'mRNA'
 # 	   AND ptype.name = 'polypeptide'
@@ -114,14 +114,59 @@ say "Total number of DDB_G_ID: " . $unique;
 # print " done!!\n\n";
 
 # my $curation = $results_genescurated->fetchall_arrayref();
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# # ---------------------------------------------------
-
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Map DDB_G_ID to Uniprot IDs.
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Load the gp2protein file
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Map DDB_G_ID to Uniprot IDs.
+# Approach map one by one
+# - For each DDB_G_ID, gets the uniprot id from the database
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+my $filename = "gp2protein.dictyBase";
+open my $FILE, '<', $filename or die "Cannot open '$filename'!\n";
+
+my %hash_gp2protein = ();
+
+# stats
+my $c_file  = 0;
+my $c_regex = 0;
+
+foreach my $line (<$FILE>) {
+    chomp($line);
+    if ( $line =~ /dictyBase:(\S+)\s+UniProtKB:(\w{6})/ ) {
+        my $ddb = $1;
+        my $uni = $2;
+
+        # say $ddb. "--->" . $uni;
+        if ( !$hash_gp2protein{$ddb} ) {
+            $hash_gp2protein{$ddb} = $uni;
+            $c_regex++;
+        }
+        else {
+            die "\n\nOooops " . $line . " is repeated!!\n";
+        }
+    }
+    else {
+        print $line. "\n";
+    }
+    $c_file++;
+}
+
+print "In file: " . $c_file . "\n";
+print "In loop: " . $c_regex . "\n";
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Map DDB_G_ID to Uniprot IDs.
+# Approach all first.
+# - Get all the ddb_g -> uniprots id from the dictybase
+# - Map the ddb_g ids from coding genes previously obtained
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 my $statement_ddb2uniprot = <<"STATEMENT";
 SELECT gxref.accession geneid, dbxref.accession uniprot
 FROM dbxref
@@ -187,25 +232,50 @@ print "\t-DDB_G ids with Uniprot IDS: " . $number_ddb2uniprot . "\n";
 print "\t-Uniprots ids with DDB_Gs  : " . $number_uniprot2ddb . "\n";
 
 my $incremental = 0;
+my $agree = 0;
+my $disag = 0;
 for my $ddb ( keys %hash_ddb2uniprot ) {
-	
-	my $number = keys %{$hash_ddb2uniprot{$ddb}};
-	if ($number > 1)
-	{
-		print $ddb." --> ". $number." ";
-		# for my $uni (sort keys %{$hash_ddb2uniprot{$ddb}})
-		for my $uni (sort keys %{$hash_ddb2uniprot{$ddb}} )
-		{
-			print $uni." (". $hash_ddb2uniprot{$ddb}{$uni}."), " ;
-		}
-		print "\n";
-		
-	}
-	$incremental += $number;
+
+    my $number = keys %{ $hash_ddb2uniprot{$ddb} };
+    if ( $number > 1 ) {
+        print $ddb. " --> ";
+
+        # for my $uni (sort keys %{$hash_ddb2uniprot{$ddb}})
+        for my $uni ( sort keys %{ $hash_ddb2uniprot{$ddb} } ) {
+            print $uni. " ";
+        }
+        say " --db2protein--picks-----> " . $hash_gp2protein{$ddb};
+    }
+    # elsif ($number == 1) {
+
+    # 	my $uni1 = '';
+    #     for my $uni (sort keys %{$hash_ddb2uniprot{$ddb}}) {
+    #         $uni1 = $uni;
+    #     }
+    # 	my $uni2 = '';
+
+    # 	$uni2 = $hash_gp2protein{$ddb};
+    # 	if ($uni2)
+    # 	{
+	   #  	if ($uni1 ne $uni2) {
+	   #  		print "For ".$ddb.", SQL gets: ".$uni1." and gp2protein: ".$uni2."\n";
+	   #  		$disag++;
+	   #  	}    
+	   #  	else
+	   #  	{
+	   #  		$agree++;
+	   #  	}		
+    # 	}
+
+
+    # }
+
+    $incremental += $number;
 
 }
 
-print "DDB_Gs are: ".$number_ddb2uniprot." with a total of ".$incremental."\n";
+say "Agree ".$agree;
+say "Disagree ".$disag;
 
 exit;
 
