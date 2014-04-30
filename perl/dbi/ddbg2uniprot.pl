@@ -170,22 +170,28 @@ print "In loop: " . $c_regex . "\n";
 my $statement_ddb2uniprot = <<"STATEMENT";
 SELECT gxref.accession geneid, dbxref.accession uniprot
 FROM dbxref
-	JOIN db ON db.db_id = dbxref.db_id
-	JOIN feature_dbxref fxref ON fxref.dbxref_id = dbxref.dbxref_id
-	JOIN feature polypeptide ON polypeptide.feature_id = fxref.feature_id
-	JOIN feature_relationship frel ON polypeptide.feature_id = frel.subject_id
-	JOIN feature transcript ON transcript.feature_id = frel.object_id
-	JOIN feature_relationship frel2 ON frel2.subject_id = transcript.feature_id
-	JOIN feature gene ON frel2.object_id = gene.feature_id
-	JOIN cvterm ptype ON ptype.cvterm_id = polypeptide.type_id
-	JOIN cvterm mtype ON mtype.cvterm_id = transcript.type_id
-	JOIN cvterm gtype ON gtype.cvterm_id = gene.type_id
-	JOIN dbxref gxref ON gene.dbxref_id = gxref.dbxref_id
+    JOIN db ON db.db_id = dbxref.db_id
+    JOIN feature_dbxref fxref ON fxref.dbxref_id = dbxref.dbxref_id
+    JOIN feature polypeptide ON polypeptide.feature_id = fxref.feature_id
+    JOIN feature_relationship frel ON polypeptide.feature_id = frel.subject_id
+    JOIN feature transcript ON transcript.feature_id = frel.object_id
+    JOIN feature_dbxref fxref2 ON fxref2.feature_id = transcript.feature_id
+    JOIN dbxref dbxref2 ON fxref2.dbxref_id = dbxref2.dbxref_id
+    JOIN db db2 ON db2.db_id = dbxref2.db_id
+    JOIN feature_relationship frel2 ON frel2.subject_id = transcript.feature_id
+    JOIN feature gene ON frel2.object_id = gene.feature_id
+    JOIN cvterm ptype ON ptype.cvterm_id = polypeptide.type_id
+    JOIN cvterm mtype ON mtype.cvterm_id = transcript.type_id
+    JOIN cvterm gtype ON gtype.cvterm_id = gene.type_id
+    JOIN dbxref gxref ON gene.dbxref_id = gxref.dbxref_id
 WHERE 
-	ptype.name = 'polypeptide'
-	AND	mtype.name = 'mRNA'
-	AND	gtype.name = 'gene'
-	AND	db.name = 'DB:SwissProt'
+    ptype.name = 'polypeptide'
+    AND mtype.name = 'mRNA'
+    AND gtype.name = 'gene'
+    AND db2.name = 'GFF_source'
+    AND db.name = 'DB:SwissProt'
+    AND dbxref2.accession = 'dictyBase Curator'
+    AND transcript.is_deleted = 0
 STATEMENT
 
 # database handle
@@ -225,57 +231,40 @@ foreach my $lineddb (@$rowddb2uniprot) {
     }
 }
 
-my $number_ddb2uniprot = keys %hash_ddb2uniprot;
-my $number_uniprot2ddb = keys %hash_uniprot2ddb;
-
-print "\t-DDB_G ids with Uniprot IDS: " . $number_ddb2uniprot . "\n";
-print "\t-Uniprots ids with DDB_Gs  : " . $number_uniprot2ddb . "\n";
-
-my $incremental = 0;
-my $agree = 0;
-my $disag = 0;
 for my $ddb ( keys %hash_ddb2uniprot ) {
 
     my $number = keys %{ $hash_ddb2uniprot{$ddb} };
     if ( $number > 1 ) {
         print $ddb. " --> ";
 
-        # for my $uni (sort keys %{$hash_ddb2uniprot{$ddb}})
         for my $uni ( sort keys %{ $hash_ddb2uniprot{$ddb} } ) {
             print $uni. " ";
         }
         say " --db2protein--picks-----> " . $hash_gp2protein{$ddb};
     }
-    # elsif ($number == 1) {
+    elsif ( $number == 1 ) {
 
-    # 	my $uni1 = '';
-    #     for my $uni (sort keys %{$hash_ddb2uniprot{$ddb}}) {
-    #         $uni1 = $uni;
-    #     }
-    # 	my $uni2 = '';
+        my $uni1 = '';
+        for my $uni ( sort keys %{ $hash_ddb2uniprot{$ddb} } ) {
+            $uni1 = $uni;
+        }
+        my $uni2 = '';
 
-    # 	$uni2 = $hash_gp2protein{$ddb};
-    # 	if ($uni2)
-    # 	{
-	   #  	if ($uni1 ne $uni2) {
-	   #  		print "For ".$ddb.", SQL gets: ".$uni1." and gp2protein: ".$uni2."\n";
-	   #  		$disag++;
-	   #  	}    
-	   #  	else
-	   #  	{
-	   #  		$agree++;
-	   #  	}		
-    # 	}
+        $uni2 = $hash_gp2protein{$ddb};
+        if ($uni2) {
+            if ( $uni1 ne $uni2 ) {
+                print "For "
+                    . $ddb
+                    . ", SQL gets: "
+                    . $uni1
+                    . " and gp2protein: "
+                    . $uni2 . "\n";
+            }
+        }
 
-
-    # }
-
-    $incremental += $number;
+    }
 
 }
-
-say "Agree ".$agree;
-say "Disagree ".$disag;
 
 exit;
 
