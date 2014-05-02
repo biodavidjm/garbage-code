@@ -36,7 +36,7 @@ my $dbh = DBI->connect( "dbi:Oracle:host=$host;sid=orcl;port=1521",
 print " done!!\n";
 
 my $statement = <<"STATEMENT";
-SELECT dbxref.accession gene_id, gene.feature_id, gene.name
+SELECT DISTINCT dbxref.accession gene_id, gene.feature_id, gene.name
 FROM cgm_chado.feature gene
 JOIN organism ON organism.organism_id=gene.organism_id
 JOIN dbxref on dbxref.dbxref_id=gene.dbxref_id
@@ -59,7 +59,7 @@ $results->execute()
 
 say " done!!";
 
-my %ddbg2gene_name    = ();
+my %hash_ddbg2gene_name    = ();
 my %ddbg2locus_number = ();
 my $count_prot_coding = 0;
 my $unique            = 0;
@@ -67,8 +67,8 @@ my $duplications      = 0;
 
 while ( my ( $DDB_G, $locus_no, $gene_name ) = $results->fetchrow_array ) {
 
-    if ( !$ddbg2gene_name{$DDB_G} ) {
-        $ddbg2gene_name{$DDB_G} = $gene_name;
+    if ( !$hash_ddbg2gene_name{$DDB_G} ) {
+        $hash_ddbg2gene_name{$DDB_G} = $gene_name;
         $unique++;
     }
     else {
@@ -78,55 +78,14 @@ while ( my ( $DDB_G, $locus_no, $gene_name ) = $results->fetchrow_array ) {
     $count_prot_coding++;
 }
 
-say "Total number of DDB_G_ID: " . $unique;
+say "Wiki SQL gets: " . $unique . " ddb_g ids";
+say "duplications are : ".$duplications;
 
-# # ---------------------------------------------------
-# # NUMBER OF CURATED MODELS
-# # Just in case need to know the number of curated genes
-# my $statement_curated = <<"STATEMENT";
-# SELECT gene.name cgene_name, gacc.accession cgene_id
-#    FROM cgm_chado.feature
-# 	   JOIN feature_dbxref fxref ON fxref.feature_id = feature.feature_id
-# 	   JOIN cgm_chado.dbxref ON dbxref.dbxref_id = fxref.dbxref_id
-# 	   JOIN cgm_chado.db ON db.db_id = dbxref.db_id
-# 	   JOIN cgm_chado.cvterm ON cvterm.cvterm_id = feature.TYPE_ID
-# 	   JOIN cgm_chado.feature_relationship frel ON frel.subject_id = feature.feature_id
-# 	   JOIN cgm_chado.feature gene ON gene.feature_id = frel.object_id
-# 	   JOIN cgm_chado.dbxref gacc ON gene.dbxref_id=gacc.dbxref_id
-# 	   JOIN cgm_chado.cvterm gtype ON gtype.cvterm_id = gene.TYPE_ID
-# 	   JOIN cgm_chado.feature_relationship frel2 ON frel2.object_id = feature.feature_id
-# 	   JOIN cgm_chado.feature poly ON poly.feature_id = frel2.subject_id
-# 	   JOIN cgm_chado.cvterm ptype ON ptype.cvterm_id = poly.TYPE_ID
-#    WHERE cvterm.name = 'mRNA'
-# 	   AND ptype.name = 'polypeptide'
-# 	   AND dbxref.accession = 'dictyBase Curator'
-# 	   AND gtype.name = 'gene'
-# 	   AND db.name = 'GFF_source'
-# 	   AND feature.is_deleted = 0
-# STATEMENT
-
-# # database handle
-# my $results_genescurated = $dbh->prepare($statement_curated);
-
-# print ">Execute statement_ddb2uniprot ";
-# $results_genescurated->execute()
-#     or die "\n\nOh no! I could not execute: " . DBI->errstr . "\n\n";
-# print " done!!\n\n";
-
-# my $curation = $results_genescurated->fetchall_arrayref();
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Map DDB_G_ID to Uniprot IDs.
 # Load the gp2protein file
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Map DDB_G_ID to Uniprot IDs.
-# Approach map one by one
-# - For each DDB_G_ID, gets the uniprot id from the database
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 my $filename = "gp2protein.dictyBase";
 open my $FILE, '<', $filename or die "Cannot open '$filename'!\n";
 
@@ -143,7 +102,7 @@ foreach my $line (<$FILE>) {
         my $uni = $2;
 
         # say $ddb. "--->" . $uni;
-        if ( !$hash_gp2protein{$ddb} ) {
+        if ( !$hash_gp2protein{$ddb} ) {    
             $hash_gp2protein{$ddb} = $uni;
             $c_regex++;
         }
@@ -151,14 +110,10 @@ foreach my $line (<$FILE>) {
             die "\n\nOooops " . $line . " is repeated!!\n";
         }
     }
-    else {
-        print $line. "\n";
-    }
-    $c_file++;
 }
-
-print "In file: " . $c_file . "\n";
-print "In loop: " . $c_regex . "\n";
+my $numberdeloscojones = keys %hash_gp2protein;
+say "gp2protein.dictyBase gets: " . $c_regex . " DDB_G ids";
+say "gp2protein.dictyBase gets: " . $numberdeloscojones . " DDB_G ids";
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Map DDB_G_ID to Uniprot IDs.
@@ -197,16 +152,17 @@ STATEMENT
 # database handle
 my $results_ddb2uniprot = $dbh->prepare($statement_ddb2uniprot);
 
-print ">Execute statement_ddb2uniprot ";
+print "\n>Execute statement_ddb2uniprot ";
 $results_ddb2uniprot->execute()
     or die "\n\nOh no! I could not execute: " . DBI->errstr . "\n\n";
-print " done!!\n\n";
+print " done!!\n";
 
 my $rowddb2uniprot = $results_ddb2uniprot->fetchall_arrayref();
 
 # hash to store
 my %hash_ddb2uniprot = ();
 my %hash_uniprot2ddb = ();
+my %hash_siddOnlyddbs = ();
 
 # check point charlie
 my %noredundancies = ();
@@ -227,12 +183,23 @@ foreach my $lineddb (@$rowddb2uniprot) {
     if ( !$hash_uniprot2ddb{$uniprot_id}{$ddb_g} ) {
 
         $hash_uniprot2ddb{$uniprot_id}{$ddb_g} = 1;
+    }
 
+    if ( !$hash_siddOnlyddbs{$ddb_g} ) {
+        $hash_siddOnlyddbs{$ddb_g} = $uniprot_id;
     }
 }
 
-for my $ddb ( keys %hash_ddb2uniprot ) {
+my $number_siddsql = keys %hash_siddOnlyddbs;
+say "SQL by Sidd gets: ".$number_siddsql;
 
+my $c_similar = 0;
+my $c_different = 0;
+my $total = 0;
+
+say "\n>Different between SiddSQL and dp2protein file: ";
+for my $ddb ( keys %hash_ddb2uniprot ) {
+    $total++;
     my $number = keys %{ $hash_ddb2uniprot{$ddb} };
     if ( $number > 1 ) {
         print $ddb. " --> ";
@@ -248,8 +215,8 @@ for my $ddb ( keys %hash_ddb2uniprot ) {
         for my $uni ( sort keys %{ $hash_ddb2uniprot{$ddb} } ) {
             $uni1 = $uni;
         }
-        my $uni2 = '';
 
+        my $uni2 = '';
         $uni2 = $hash_gp2protein{$ddb};
         if ($uni2) {
             if ( $uni1 ne $uni2 ) {
@@ -259,12 +226,58 @@ for my $ddb ( keys %hash_ddb2uniprot ) {
                     . $uni1
                     . " and gp2protein: "
                     . $uni2 . "\n";
+                    $c_different++;
+            }
+            else
+            {
+                $c_similar++;
             }
         }
-
     }
-
 }
+
+say "Similar:   ".$c_similar;
+say "Different: ".$c_different;
+say "Total:     ".$total;
+
+say "\nChecking again, final assesment";
+
+my $c_aredifferent = 0;
+my $c_same = 0;
+my $total_aqui = 0;
+my $tellmeagain = keys %hash_gp2protein;
+say "I am going through a hash of ".$tellmeagain;
+
+for my $line (keys %hash_gp2protein) {
+    $total_aqui++;
+    if ( !$hash_siddOnlyddbs{$line} ) {
+        $c_aredifferent++;
+        # print $line." ";
+    }
+    else {
+        $c_same++;
+    }
+}
+say "\n\ngp2protein file has ".$c_same." similar ddb_g ids to Sidd SQL";
+say "gp2protein file has an additional ".$c_aredifferent." ddb_g no selected from the Sidd SQL";
+say "the total must be ".$total_aqui;
+
+my $co_same = 0;
+my $co_nosame = 0;
+for my $line ( keys %hash_ddbg2gene_name)
+{
+    if ( $hash_gp2protein{$line} ) {
+        $co_same++;
+    }
+    else {
+        $co_nosame++;
+        print $line."\n";
+    }
+}
+
+say "Wiki SQL has this similar: ".$co_same;
+say "but I got these extra ".$co_nosame;
+
 
 exit;
 

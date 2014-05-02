@@ -1,5 +1,24 @@
 # SQL statements
 
+- (wrong) SQL to get the protein coding genes. Problems:
+	* it is not a unique list: there are duplications (solve with DISTINCT)
+	* There are 74 extra genes that do not appear in the ``gp2protein`` file
+	
+```
+SELECT DISTINCT dbxref.accession gene_id, gene.feature_id, gene.name
+FROM cgm_chado.feature gene
+JOIN organism ON organism.organism_id=gene.organism_id
+JOIN dbxref on dbxref.dbxref_id=gene.dbxref_id
+JOIN cgm_chado.cvterm gtype on gtype.cvterm_id=gene.type_id
+JOIN cgm_chado.feature_relationship frel ON frel.object_id=gene.feature_id
+JOIN cgm_chado.feature mrna ON frel.subject_id=mrna.feature_id
+JOIN cgm_chado.cvterm mtype ON mtype.cvterm_id=mrna.type_id
+WHERE gtype.name='gene' 
+        AND mtype.name='mRNA' 
+        AND organism.common_name = 'dicty' 
+        AND gene.is_deleted = 0 
+        AND gene.name NOT LIKE '%\_ps%' ESCAPE '\'
+```
 
 - Select all the DDB_G IDS and protein alternative names:
 
@@ -81,7 +100,7 @@ WHERE
 	AND	db.name = 'DB:SwissProt'
 ```
 
-- Mapping DDB_G_ID to Uniprot id, but this time the gene model and chado model is taken into account, which means that if the gene has been curated. **BUT BE CAREFULLY because it is problematic!!**
+- Mapping DDB_G_ID to Uniprot id, but this time the gene model and chado model is taken into account, which means that if the gene has been curated. Even though there is a little problem with this SQL: it does not select all the protein coding genes than the gp2protein file contains. that files has an additional 54 proteins that belongs to the transposable elements.
 
 ```
 SELECT gxref.accession geneid, dbxref.accession uniprot
