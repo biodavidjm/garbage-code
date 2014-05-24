@@ -1,4 +1,5 @@
-#
+
+#!/usr/bin/perl
 # Foo.pm
 #
 package Foo;

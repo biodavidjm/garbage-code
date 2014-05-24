@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 package Bar2;
 
 use strict;
