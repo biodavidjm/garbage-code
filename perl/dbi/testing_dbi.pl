@@ -5,6 +5,11 @@ use feature qw/say/;
 
 use DBI;
 
+
+use Getopt::Long;
+use IO::File;
+use autodie qw/open close/;
+
 my $command = "testing_dbi.pl";
 
 # Validation section
