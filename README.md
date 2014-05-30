@@ -9,10 +9,17 @@ The main languages are:
 ## Perl
 ***
 
-#### DBI
-Check the folder to see all the scripts
+### DBI
+Check the folder to see all the scripts.
 
-#### Modern Perl
+##### `postgres` folder contains examples of Perl scripts working with PostgreSQL
+
+* ``testing_pg.pl``: basic operations using DBI::pg
+
+* ``transactions_pg.pl``: Many databases support **transactions**. This means that you can make a whole bunch of queries which would modify the databases, but none of the changes are actually made. Then at the end you issue the special SQL query **COMMIT**, and all the changes are made simultaneously. Alternatively, you can issue the query **ROLLBACK**, in which case all the queries are thrown away.
+
+
+### Modern Perl
 Learning to run Modern Perl, i.e., the way the world's most effective Perl programmers work, i.e., the way the world's most effective Perl programmers work. [Here is the link](http://modernperlbooks.com/books/modern_perl_2014/) to the last version (2014) of the book.
 
 - Personal Goals
