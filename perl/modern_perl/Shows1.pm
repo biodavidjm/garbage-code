@@ -22,9 +22,6 @@ sub show_date {
 sub tickets {
 	$_[0]->{tickets}=$_[1] if defined $_[1]; $_[0]->{tickets}	
 }
-sub influencer {
-	$_[0]->{influencer}=$_[1] if defined $_[1]; $_[0]->{influencer}	
-}
 
 sub increase_price {
 	my $self = shift;
@@ -33,13 +30,3 @@ sub increase_price {
 	return $self;
 }
 
-# Overriding a method
-sub init {
-	my $self = shift;
-	my $influencer = $self->influencer || "unknown";
-	unless (ref $influencer) {
-		my $new_o = Artist->new (name=> $influencer);
-		$self->influencer($new_o);
-	}
-	$self->SUPER::init();
-}

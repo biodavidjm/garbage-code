@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+# Scrip to test objects without using Moose.
+
+
 use strict;
 use warnings;
 # use Artist1;
