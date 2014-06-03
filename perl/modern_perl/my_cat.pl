@@ -1,8 +1,11 @@
 #!/usr/bin/env perl
 
-# Testing Modern Perl
+# Testing Object Oriented. Perl native OO
 
 use Cat;
+use strict;
+use warnings;
+
 use feature qw/say/;
 
 my $name = "Rodrigo";
@@ -10,7 +13,7 @@ my $name = "Rodrigo";
 my $cat = Cat->new(
     name => $name,
     diet => 'queso',
-    birth_year  => 2000,
+    # birth_year  => 2000,
 
 );
 

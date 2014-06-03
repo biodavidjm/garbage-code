@@ -28,6 +28,9 @@ Learning to run Modern Perl, i.e., the way the world's most effective Perl progr
 
 	[ ] Learn Modern Perl.
 
+### Moose
+* Class, from its own definition: A role is something that classes do. Usually, a role encapsulates some piece of behavior or state that can be shared between classes. It is important to understand that roles are not classes. You cannot inherit from a role, and a role cannot be instantiated. We sometimes say that ***roles are consumed, either by classes or other roles***
+
 
 ## SQL
 ***
