@@ -37,6 +37,9 @@ Learning to run Modern Perl, i.e., the way the world's most effective Perl progr
 - List of SQL statements I have tried so far (see the readme file in the `sql` directory)
 
 
+
+
+
 ## HTML-CSS
 ***
 See the list of pages in the folder.
