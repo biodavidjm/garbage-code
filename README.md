@@ -9,6 +9,13 @@ The main languages are:
 ## Perl
 ***
 
+### Useful modules
+
+##### XML::Simple, Data::Dumper
+
+* Load the xml file in here `my $ref = XMLin([<xml file or string>] [, <options>]);`
+* Put it here: `print Dumper($foo, $bar);`
+
 ### DBI
 Check the folder to see all the scripts.
 
