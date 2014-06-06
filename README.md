@@ -16,6 +16,11 @@ The main languages are:
 * Load the xml file in here `my $ref = XMLin([<xml file or string>] [, <options>]);`
 * Put it here: `print Dumper($foo, $bar);`
 
+The script `get_xml_structure.pl` uses both libraries. As a result, it creates a perl data structure that keeps the xml file info.
+
+The problem with my music xml file is that it is huge. Therefore, a better approach to process my file should be using XML::LibXML. But first, I have to understand what XPath is about, and a good beginning is to follow [this tutorial at www3 website](http://www.w3schools.com/XPath/)
+
+
 ### DBI
 Check the folder to see all the scripts.
 
