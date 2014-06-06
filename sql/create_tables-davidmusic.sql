@@ -53,30 +53,30 @@ create table show
     show_date               date                 not null,
     city                    varchar(128)         not null,
     country                 varchar(128)                 ,
-    opinion                 integer                     
+    opinion                 integer CHECK( opinion < 6)                     
 );
 
-create table show_band
+create table band_show
 (
     show_id                 integer             not null,
     band_id                 integer             not null,
-    CONSTRAINT show_band_show_id_fk FOREIGN KEY(show_id) REFERENCES show(show_id),
-    CONSTRAINT show_band_band_id_fk FOREIGN KEY(band_id) REFERENCES band(band_id)
+    CONSTRAINT band_show_show_id_fk FOREIGN KEY(show_id) REFERENCES show(show_id),
+    CONSTRAINT band_show_band_id_fk FOREIGN KEY(band_id) REFERENCES band(band_id)
 );
 
-create table friend
+create table source
 (
-    friend_id               serial           PRIMARY KEY,
-    friend_fn               varchar(128)         not null,
-    friend_ln               varchar(128)         not null
+    source_id               serial           PRIMARY KEY,
+    source_fn               varchar(128)         not null,
+    source_ln               varchar(128)         not null
 );
 
-create table band_friend
+create table band_source
 (
     band_id                 integer         not null,
-    friend_id               integer         not null,
-    CONSTRAINT band_friend_band_id_fk   FOREIGN KEY(band_id) REFERENCES band(band_id),
-    CONSTRAINT band_friend_friend_id_fk FOREIGN KEY(friend_id) REFERENCES friend(friend_id)
+    source_id               integer         not null,
+    CONSTRAINT band_source_band_id_fk   FOREIGN KEY(band_id) REFERENCES band(band_id),
+    CONSTRAINT band_source_source_id_fk FOREIGN KEY(source_id) REFERENCES source(source_id)
 );
 
 create table fan

@@ -1,0 +1,41 @@
+// dot 2.38.0 on Mac OS X 10.9.3
+// SchemaSpy rev 590
+digraph "gff3view" {
+  graph [
+    rankdir="RL"
+    bgcolor="#f7f7f7"
+    nodesep="0.18"
+    ranksep="0.46"
+    fontname="Helvetica"
+    fontsize="11"
+  ];
+  node [
+    fontname="Helvetica"
+    fontsize="11"
+    shape="plaintext"
+  ];
+  edge [
+    arrowsize="0.8"
+  ];
+  "gff3view" [
+    label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">gff3view</TD></TR>
+      <TR><TD PORT="feature_id" COLSPAN="3" ALIGN="LEFT">feature_id</TD></TR>
+      <TR><TD PORT="ref" COLSPAN="3" ALIGN="LEFT">ref</TD></TR>
+      <TR><TD PORT="source" COLSPAN="3" ALIGN="LEFT">source</TD></TR>
+      <TR><TD PORT="type" COLSPAN="3" ALIGN="LEFT">type</TD></TR>
+      <TR><TD PORT="fstart" COLSPAN="3" ALIGN="LEFT">fstart</TD></TR>
+      <TR><TD PORT="fend" COLSPAN="3" ALIGN="LEFT">fend</TD></TR>
+      <TR><TD PORT="score" COLSPAN="3" ALIGN="LEFT">score</TD></TR>
+      <TR><TD PORT="strand" COLSPAN="3" ALIGN="LEFT">strand</TD></TR>
+      <TR><TD PORT="phase" COLSPAN="3" ALIGN="LEFT">phase</TD></TR>
+      <TR><TD PORT="seqlen" COLSPAN="3" ALIGN="LEFT">seqlen</TD></TR>
+      <TR><TD PORT="name" COLSPAN="3" ALIGN="LEFT">name</TD></TR>
+      <TR><TD PORT="organism_id" COLSPAN="3" ALIGN="LEFT">organism_id</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">view</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
+    </TABLE>>
+    URL="tables/gff3view.html"
+    tooltip="gff3view"
+  ];
+}

@@ -1,0 +1,12 @@
+band
+fan
+playlist
+show
+source
+album
+song
+style
+band_fan
+band_show
+band_source
+song_playlist
