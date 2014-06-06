@@ -9,7 +9,7 @@ create table album
 (   
     album_id                serial           PRIMARY KEY,
     album_name              varchar(128)        not null,
-    album_year              integer(128)                ,
+    album_year              integer                     ,
     band_id                 integer             not null,
     CONSTRAINT album_band_id_fk FOREIGN KEY(band_id) REFERENCES band(band_id)
 );
@@ -18,7 +18,7 @@ create table song
 (
     song_id                 serial           PRIMARY KEY,
     song_name               varchar(128)        not null,
-    duration                date interval               ,
+    duration                date                        ,
     track_number            integer                     ,  
     album_id                integer             not null,
     CONSTRAINT song_album_id_fk FOREIGN KEY(album_id) REFERENCES album(album_id)
@@ -27,8 +27,7 @@ create table song
 create table playlist
 (
     playlist_id             serial           PRIMARY KEY,
-    playlist_name           varchar(128)        not null,
-    song_id                 integer             not null,
+    playlist_name           varchar(128)        not null
 );
 
 create table song_playlist
@@ -50,10 +49,10 @@ create table style
 
 create table show
 (
-    show_id                 serial           PRIMARY KEY,
-    show_date               date                not null,
-    city                    varchar(64)         not null,
-    country                 varchar(64)                 ,
+    show_id                 serial            PRIMARY KEY,
+    show_date               date                 not null,
+    city                    varchar(128)         not null,
+    country                 varchar(128)                 ,
     opinion                 integer                     
 );
 
@@ -65,25 +64,25 @@ create table show_band
     CONSTRAINT show_band_band_id_fk FOREIGN KEY(band_id) REFERENCES band(band_id)
 );
 
-create table source
+create table friend
 (
     friend_id               serial           PRIMARY KEY,
-    friend_fn               varchar(64)         not null,
-    friend_ln               varchar(128)        not null
+    friend_fn               varchar(128)         not null,
+    friend_ln               varchar(128)         not null
 );
 
-create table band_source
+create table band_friend
 (
     band_id                 integer         not null,
-    source_id               integer         not null,
-    CONSTRAINT band_source_band_id_fk   FOREIGN KEY(band_id) REFERENCES band(band_id),
-    CONSTRAINT band_source_source_id_fk FOREIGN KEY(source_id) REFERENCES source(source_id)
+    friend_id               integer         not null,
+    CONSTRAINT band_friend_band_id_fk   FOREIGN KEY(band_id) REFERENCES band(band_id),
+    CONSTRAINT band_friend_friend_id_fk FOREIGN KEY(friend_id) REFERENCES friend(friend_id)
 );
 
 create table fan
 (
     fan_id                  serial          PRIMARY KEY,
-    fan_fname               varchar(128)       not null,
+    fan_fname               varchar(128)       not null
 );
 
 create table band_fan
