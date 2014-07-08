@@ -21,7 +21,7 @@ The script `get_xml_structure.pl` uses both libraries. As a result, it creates a
 The problem with my music xml file is that it is huge. Therefore, a better approach to process my file should be using XML::LibXML. But first, I have to understand what XPath is about, and a good beginning is to follow [this tutorial at www3 website](http://www.w3schools.com/XPath/)
 
 
-### DBI
+### Database related
 Check the folder to see all the scripts.
 
 ##### `postgres` folder contains examples of Perl scripts working with PostgreSQL
@@ -29,6 +29,10 @@ Check the folder to see all the scripts.
 * ``testing_pg.pl``: basic operations using DBI::pg
 
 * ``transactions_pg.pl``: Many databases support **transactions**. This means that you can make a whole bunch of queries which would modify the databases, but none of the changes are actually made. Then at the end you issue the special SQL query **COMMIT**, and all the changes are made simultaneously. Alternatively, you can issue the query **ROLLBACK**, in which case all the queries are thrown away.
+
+#### DBIx::Class
+
+
 
 
 ### Modern Perl
@@ -44,12 +48,14 @@ Learning to run Modern Perl, i.e., the way the world's most effective Perl progr
 * Class, from its own definition: A role is something that classes do. Usually, a role encapsulates some piece of behavior or state that can be shared between classes. It is important to understand that roles are not classes. You cannot inherit from a role, and a role cannot be instantiated. We sometimes say that ***roles are consumed, either by classes or other roles***
 
 
-## SQL
+## DATABASE
 ***
-- List of SQL statements I have tried so far (see the readme file in the `sql` directory)
 
+### SQL
+List of SQL statements I have tried so far (see the - `SQL.md` file in the `database` directory)
 
-
+### Database schemas
+Here is where I keep the schemas of the databases I have created. I created the schemas with bin/schemaSpy5
 
 
 ## HTML-CSS
