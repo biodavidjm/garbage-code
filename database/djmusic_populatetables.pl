@@ -24,30 +24,47 @@ my $filename = $options{f};
 say "Ready to open " . $filename;
 my $FILE1 = get_file($filename);
 
-my $flag     = 0;
-my $c_dict   = 0;
-my $flag_end = 0;
+# FLAGS
+my $flag   = 0;
+my $c_dict = 0;
 
-my ( $name, $band, $album, $year, $duration) = '';
+# SCALARS FOR THE DATA.
+my ( $track_id, $track_number, $duration, $name, $band, $album, $year,
+    $genre )
+    = '';
+
+# BAND TABLE
+# Using hash to easily avoid redundancy
+my %band_table = ();
+
+# ALBUM TABLE
+# they Key has to be the band name, since one album could have two different bands.
+my %album_table = ();
+
+# $album_table{$band}{$album} = $album_year;
+
+# Song
+# it contains all the information, although when filling up the table in the database, it needs to check album and band
+my %song_table = ();
+
+# my @temp = ($band,$album,$name,$song_duration,$song_number,$style);
+# $song_table{$track_id} = [@temp];
 
 # STATS
-my $c_total = 0;
+my $c_total    = 0;
 my $c_podcasts = 0;
-my $c_itunesu = 0;
-my $c_movie = 0;
-my $c_tvshow = 0;
+my $c_itunesu  = 0;
+my $c_movie    = 0;
+my $c_tvshow   = 0;
+my $c_albums   = 0;
 
-my $c_name = 0;
-my $c_year = 0;
-my $c_artist = 0;
-my $c_duration = 0;
 
 foreach my $line (<$FILE1>) {
     chomp($line);
     if ( ( $line =~ /<dict>/ ) & ( $c_dict != 3 ) ) {
         $c_dict++;
         if ( $c_dict == 3 ) {
-            say "yeeeep";
+            say "Ready to record data";
             $flag = 1;
             next;
         }
@@ -59,192 +76,203 @@ foreach my $line (<$FILE1>) {
     }
 
     if ( $flag == 1 ) {
+
+        if ( $line =~ /<key>Track ID<\/key><integer>(.*)<\/integer>/ ) {
+            $track_id = $1;
+            next;
+        }
         if ( $line =~ /<key>Name<\/key><string>(.*)<\/string>/ ) {
             $name = $1;
-            $c_name++;
             next;
         }
         if ( $line =~ /<key>Artist<\/key><string>(.*)<\/string>/ ) {
             $band = $1;
-            $c_artist++;
+            $band =~ s/[^a-zA-Z0-9]/ /g;
             next;
         }
         if ( $line =~ /<key>Album<\/key><string>(.*)<\/string>/ ) {
             $album = $1;
+            $album =~ s/[^a-zA-Z0-9]/ /g;
             next;
         }
         if ( $line =~ /<key>Year<\/key><integer>(.*)<\/integer>/ ) {
             $year = $1;
-            $c_year++;
             next;
         }
         if ( $line =~ /<key>Total Time<\/key><integer>(.*)<\/integer>/ ) {
             $duration = $1;
-            $c_duration++;
+            next;
+        }
+        if ( $line =~ /<key>Track Number<\/key><integer>(.*)<\/integer>/ ) {
+            $track_number = $1;
+            next;
+        }
+        if ( $line =~ /<key>Genre<\/key><string>(.*)<\/string>/ ) {
+            $genre = $1;
+
+            # Needs to change weird characters by dash...
+            $genre =~ s/[^a-zA-Z0-9]/ /g;
             next;
         }
 
-
         # DO NOT PROCESS:
         # PODCASTS -
-        if ($line =~ /<key>Podcast<\/key><true\/>/)
-        {
+        if ( $line =~ /<key>Podcast<\/key><true\/>/ ) {
             $flag = 0;
-            ($name,$band,$album,$year ) = '';
+            (   $track_id, $track_number, $duration, $name, $band, $album,
+                $year, $genre
+            ) = '';
             $c_podcasts++;
         }
+
         # ITUNESU -
-        if ($line =~ /<key>iTunesU<\/key><true\/>/)
-        {
+        if ( $line =~ /<key>iTunesU<\/key><true\/>/ ) {
             $flag = 0;
-            ($name,$band,$album,$year ) = '';
+            (   $track_id, $track_number, $duration, $name, $band, $album,
+                $year, $genre
+            ) = '';
             $c_itunesu++;
         }
+
         # MOVIES -
-        if ($line =~ /<key>Movie<\/key><true\/>/)
-        {
+        if ( $line =~ /<key>Movie<\/key><true\/>/ ) {
             $flag = 0;
-            ($name,$band,$album,$year ) = '';
+            (   $track_id, $track_number, $duration, $name, $band, $album,
+                $year, $genre
+            ) = '';
             $c_movie++;
         }
+
         # TV show -
-        if ($line =~ /<key>TV Show<\/key><true\/>/)
-        {
+        if ( $line =~ /<key>TV Show<\/key><true\/>/ ) {
             $flag = 0;
-            ($name,$band,$album,$year ) = '';
+            (   $track_id, $track_number, $duration, $name, $band, $album,
+                $year, $genre
+            ) = '';
             $c_tvshow++;
         }
     }
+
+# Once we have reach the final of the <dict> record... time to store the information
     if ( ( $line =~ /<\/dict>/ ) & ( $flag == 1 ) ) {
         $flag = 0;
-        if ($name) {
-            if ($band) {
-                if ($album) {
-                    my $album_year = '';
-                    $album_year = check_empty($year);
-                    my $song_duration = '';
-                    $song_duration = check_empty($duration);
 
-                        say "Artist: "
-                            . $band
-                            . ";\tAlbum: "
-                            . $album
-                            . ";\tSong name: "
-                            . $name
-                            . ";\tYear: "
-                            . $album_year
-                            . ";\tDuration: "
-                            . $song_duration;
+        # Any data in the database MUST HAVE song name, band, and album>
+        if ($track_id) {
+            if ($name) {
+                if ($band) {
+                    if ($album) {
 
-                            $c_total++;
-                            
+                        # These are not "required" fields in the database
+                        my $album_year = '';
+                        $album_year = check_empty($year);
+                        my $song_duration = '';
+                        $song_duration = check_empty($duration);
+                        my $song_number = '';
+                        $song_number = check_empty($track_number);
+                        my $style = '';
+                        $style = check_empty($genre);
+
+                        # FILLING UP DATA STRUCTURE
+                        # SONGs
+                        my @temp = (
+                            $band, $album, $name, $song_duration,
+                            $song_number, $style
+                        );
+                        $song_table{$track_id} = [@temp];
+
+                        # BANDs
+                        if ( !$band_table{$band} ) {
+                            $band_table{$band} = 1;
+                        }
+
+                        # ALBUMs
+                        if ( !$album_table{$band}{$album} ) {
+                            $album_table{$band}{$album} = $album_year;
+                            $c_albums++;
+                        }
+
+                        $c_total++;
+                    }
                 }
             }
         }
-        ( $name,$band,$album,$year ) = '';
+
+        # And reset before leaving
+        (   $track_id, $track_number, $duration, $name, $band, $album, $year,
+            $genre
+        ) = '';
     }
 }
 
+my $c_bands = keys %band_table;
+my $c_songs = keys %song_table;
 
-say "Printed:     ".$c_total;
-say "Artist:      ".$c_artist;
-say "Song name:   ".$c_name;
-say "Album year:  ".$c_year;
-say "Track time:  ".$c_duration;
-say "Podcast:     ".$c_podcasts;
-say "iTunesU:     ".$c_itunesu;
-say "Movies :     ".$c_movie;
-say "TV Show:     ".$c_tvshow;
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+say "---- Stats --------------";
+say "Printed:     " . $c_total;
+say "  - Artist:     " . $c_bands;
+say "  - Albums:    " . $c_albums;
+say "  - Songs:     " . $c_songs;
+say "Podcast:     " . $c_podcasts;
+say "iTunesU:     " . $c_itunesu;
+say "Movies :     " . $c_movie;
+say "TV Show:     " . $c_tvshow;
+say "-------------------------";
+
 # OUTPUT FILE
-# Output file name (uses date & time)
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+my $outfile = "pop_all_djmusic_tables.sql";
 
-# my $outfile = "../data/$ymd.gp2protein.gpi_dicty";
+open my $out, '>', $outfile
+    or die "Big problem: I can't create '$outfile'";
 
-# open my $out, '>', $outfile
-#     or die "Big problem: I can't create '$outfile'";
+my $head_band = "
+-- Band\n\n
+";
 
-# my $localtime = localtime();
+print {$out} $head_band;
 
-# # Head info to the GPI FILE
-# my $headinfo = "!
-# ! gpi-version: 1.1
-# ! namespace: dictyBase
-# !
-# ! This file contains additional information for genes in the dictyBase.
-# ! Gene accessions are represented in this file even if there is no associated GO annotation.
-# !
-# ! Columns:
-# !
-# !   name                   required? cardinality   GAF column #
-# !   DB_Object_ID           required  1             2/17
-# !   DB_Object_Symbol       required  1             3
-# !   DB_Object_Name         optional  0 or greater  10
-# !   DB_Object_Synonym(s)   optional  0 or greater  11
-# !   DB_Object_Type         required  1             12
-# !   Taxon                  required  1             13
-# !   Parent_Object_ID       optional  0 or 1        -
-# !   DB_Xref(s)             optional  0 or greater  -
-# !   Properties             optional  0 or greater  -
-# !
-# ! Generated on $localtime
-# !
-# ";
+for my $artist ( sort keys %band_table ) {
+    say {$out} "INSERT INTO band (band_name) VALUES ('" . $artist . "');";
+}
 
-# print {$out} $headinfo;
+my $head_album = "
+-- Album\n\n
+";
 
-# my $c_genes    = 0;
-# my $c_products = 0;
-# my $c_syn      = 0;
+print {$out} $head_album;
 
-# print {$out}
-#     "DDB_G_ID\tGene_Name\tGene_Product\tAlternative_gene_name\tObject_type\tTaxon\tParent_Object\tUniprot_ID\n";
-# for my $ddbg ( sort keys %hash_gp2protein ) {
+for my $artist ( sort keys %album_table ) {
+    for my $album ( sort keys %{ $album_table{$artist} } ) {
+        print {$out}
+            "INSERT INTO album (album_name, album_year, band_id) VALUES ('"
+            . $album . "',";
 
-#     # ddbg
-#     print {$out} $ddbg . "\t";
+        # This can be null, so let's check and print it out correctly:
+        my $album_year = $album_table{$artist}{$album};
+        if ( $album_year =~ /NULL/ ) {
+            print {$out} $album_year. ",";
+        }
+        else {
+            print {$out} "'" . $album_year . "',";
+        }
 
-#     # Gene name
-#     print {$out} $hash_ddbg2gene_name{$ddbg} . "\t";
-
-#     # Gene product
-#     my $is_product = $hash_geneproduct{$ddbg};
-#     if ( !$is_product ) {
-#         print {$out} " \t";
-#     }
-#     else {
-#         print {$out} $hash_geneproduct{$ddbg} . "\t";
-#         $c_products++;
-#     }
-
-#     # gene synonyms
-#     my $is_syn = $hash_gene_synonym{$ddbg};
-#     if ( !$is_syn ) {
-#         print {$out} " \t";
-#     }
-#     else {
-#         print {$out} $is_syn . "\t";
-#         $c_syn++;
-#     }
-
-#     # Object type, taxon
-#     print {$out} "gene\ttaxon:44689\t \t";
-
-#     # Uniprot ID
-#     print {$out} $hash_gp2protein{$ddbg} . "\n";
-
-#     $c_genes++;
-# }
-
-# say "\nDouble checking numbers ";
-# say "\t- Has products: " . $c_products;
-# say "\t- Has synonyms: " . $c_syn;
-
-# $dbh->disconnect();
+        print {$out} " (SELECT band_id FROM band WHERE band_name='"
+            . $artist
+            . "'));\n";
+    }
+}
 
 exit;
+
+for my $trackid ( sort { $a <=> $b } keys %song_table ) {
+    say "Track " . $trackid;
+    foreach my $i ( 0 .. $#{ $song_table{$trackid} } ) {
+        say "\t" . $song_table{$trackid}[$i];
+    }
+}
+
+#----- THE END
 
 sub get_file {
 
@@ -263,17 +291,14 @@ sub get_file {
 
 sub check_empty {
     my ($whatever) = @_;
-    if ($whatever)
-    {
+    if ($whatever) {
         return $whatever;
     }
-    else
-    {
+    else {
         my $nulo = "NULL";
         return $nulo;
     }
 }
-
 
 =head1 NAME
 
