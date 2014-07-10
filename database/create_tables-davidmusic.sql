@@ -14,13 +14,14 @@ create table album
     CONSTRAINT album_band_id_fk FOREIGN KEY(band_id) REFERENCES band(band_id)
 );
 
--- ALTER TABLE song ADD COLUMN itunes_id integer
-
+-- ALTER TABLE song ADD COLUMN itunes_id integer;
+-- ALTER TABLE song DROP COLUMN duration;
+-- ALTER TABLE song ADD COLUMN duration integer;
 create table song
 (
     song_id                 integer           PRIMARY KEY,
     song_name               varchar(128)        not null,
-    duration                date                        ,
+    duration                integer                     ,
     track_number            integer                     ,  
     itunes_id               integer                     ,
     album_id                integer             not null,
@@ -45,9 +46,15 @@ create table song_playlist
 create table style
 (
     style_id                serial           PRIMARY KEY,
-    style_name              varchar(128)         not null,
+    style_name              varchar(128)         not null
+);
+
+create table song_style
+(
     song_id                 integer             not null,
-    CONSTRAINT song_style_song_id_fk FOREIGN KEY(song_id) REFERENCES song(song_id)
+    style_id                integer             not null,
+    CONSTRAINT song_playlist_song_id_fk FOREIGN KEY(song_id) REFERENCES song(song_id),
+    CONSTRAINT song_playlist_style_id_fk FOREIGN KEY(style_id) REFERENCES style(style_id)
 );
 
 create table show

@@ -10,14 +10,13 @@ use Text::CSV;
 
 # system('clear');
 
-# # # # # #
+# # # # # # # # #
 #
 # To Do
 #
 # - - - - - - -
-# Modify from the itunes database exclusively the ' as I have done with 'song'
 #
-# # # # # #
+# # # # # # # # # 
 
 my $script_name = "djmusic_populatetables.pl";
 
@@ -64,6 +63,9 @@ my %song_table = ();
 my %playlist_table = ();
 my $playlist_name = '';
 my $playlist_song_id = '';
+
+# Styles
+my %style_table = ();
 
 # my @temp = ($band,$album,$name,$song_duration,$song_number,$style);
 # $song_table{$track_id} = [@temp];
@@ -124,6 +126,10 @@ foreach my $line (<$FILE1>) {
 
             # Needs to change weird characters by dash...
             $genre =~ s/\'//g;
+            if ( !$style_table{$genre} )
+            {
+                $style_table{$genre} = 1;
+            }
             next;
         }
 
@@ -357,6 +363,27 @@ for my $playlist_name (sort keys %playlist_table)
         print {$out}  ");\n";
     }
 }
+
+my $head_style = "\n\n--Style\n\n";
+
+for my $style (keys %style_table)
+{
+    say "INSERT INTO style (style_name) VALUES ('". $style . "')";
+}
+
+exit;
+
+
+my $head_ss = "\n\n--Song_Style\n\n";
+# my @temp = ($band, $album, $name, $song_duration, $song_number, $style);
+
+for my $trackid ( sort { $a <=> $b } keys %song_table ) {
+    print "INSERT INTO song_style (song_id, style_id) VALUES (";
+
+        #*********
+}
+
+
 
 exit;
 
