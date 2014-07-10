@@ -37,6 +37,10 @@ my $FILE1 = get_file($filename);
 my $flag   = 0;
 my $c_dict = 0;
 
+# playlist flag
+my $flag_playlist = 0;
+my $flag_array = 0;
+
 # SCALARS FOR THE DATA.
 my ( $track_id, $track_number, $duration, $name, $band, $album, $year,
     $genre )
@@ -56,6 +60,11 @@ my %album_table = ();
 # it contains all the information, although when filling up the table in the database, it needs to check album and band
 my %song_table = ();
 
+# Playlist
+my %playlist_table = ();
+my $playlist_name = '';
+my $playlist_song_id = '';
+
 # my @temp = ($band,$album,$name,$song_duration,$song_number,$style);
 # $song_table{$track_id} = [@temp];
 
@@ -69,18 +78,12 @@ my $c_albums   = 0;
 
 foreach my $line (<$FILE1>) {
     chomp($line);
-    if ( ( $line =~ /<dict>/ ) & ( $c_dict != 3 ) ) {
+    if ( ( $line =~ /<dict>/ ) & ( $c_dict < 3 ) ) {
         $c_dict++;
-        if ( $c_dict == 3 ) {
-            say "Ready to record data";
-            $flag = 1;
-            next;
-        }
     }
 
     if ( ( $line =~ /<dict>/ ) & ( $c_dict == 3 ) ) {
         $flag = 1;
-        next;
     }
 
     if ( $flag == 1 ) {
@@ -160,7 +163,7 @@ foreach my $line (<$FILE1>) {
             ) = '';
             $c_tvshow++;
         }
-    }
+    } #if ( $flag == 1 ) {
 
 # Once we have reach the final of the <dict> record... time to store the information
     if ( ( $line =~ /<\/dict>/ ) & ( $flag == 1 ) ) {
@@ -211,15 +214,49 @@ foreach my $line (<$FILE1>) {
         (   $track_id, $track_number, $duration, $name, $band, $album, $year,
             $genre
         ) = '';
+    } # if ( ( $line =~ /<\/dict>/ ) & ( $flag == 1 ) )
+
+    # PLAYLIST TIME
+    if ($line =~ /<key>Playlists<\/key>/) {
+        $flag_playlist = 1;
+        $c_dict++; # This will prevent getting into the previous loops.
+        next;
     }
-}
+    
+    if ($flag_playlist) {
+        if ($line =~ /<key>Name<\/key><string>(.*)<\/string>/) {
+            $playlist_name = $1;
+            $playlist_name =~ s/\'//g;
+            if ($playlist_name !~ /(Library|Music|Movies|TV Shows|Podcast|iTunes U|Audiobooks|Purchased|iTunes Artwork Screen Saver|On-The-Go|Voice Memos|trt1)/ )
+            {
+                $flag_array = 1;
+            }
+        }
+
+        if ( ($flag_array == 1) & ($line =~ /<key>Track ID<\/key><integer>(.*)<\/integer>/) ) {
+            $playlist_song_id = $1;
+            if ( !$playlist_table{$playlist_name}{$playlist_song_id} )
+            {
+                $playlist_table{$playlist_name}{$playlist_song_id} = 1;  
+            }
+        }
+        
+        if ($line =~ /<\/array>/) {
+            $flag_array = 0;
+            $playlist_name = '';
+            $playlist_song_id = '';
+        }
+    }
+
+} # End of main foreach my $line (<$FILE1>)
+
 
 my $c_bands = keys %band_table;
 my $c_songs = keys %song_table;
 
 say "---- Stats --------------";
 say "Printed:     " . $c_total;
-say "  - Artist:     " . $c_bands;
+say "  - Artist:    " . $c_bands;
 say "  - Albums:    " . $c_albums;
 say "  - Songs:     " . $c_songs;
 say "Podcast:     " . $c_podcasts;
@@ -267,9 +304,7 @@ for my $artist ( sort keys %album_table ) {
     }
 }
 
-my $head_song = "
--- Song\n\n
-";
+my $head_song = "\n\n-- Song\n\n";
 
 print {$out} $head_song;
 
@@ -297,6 +332,30 @@ for my $trackid ( sort { $a <=> $b } keys %song_table ) {
     # itunes_id
     print {$out} "'".$trackid."',"; 
     print {$out} "(SELECT album.album_id FROM album JOIN band ON band.band_id = album.band_id WHERE album.album_name = '".$song_table{$trackid}[1]."' AND band.band_name = '".$song_table{$trackid}[0]."'));\n";
+}
+
+my $head_pl = "\n\n--Playlist\n\n";
+
+print {$out} $head_pl;
+
+for my $playlist_name (sort keys %playlist_table)
+{
+    say {$out} "INSERT INTO playlist (playlist_name) VALUES ('" .$playlist_name. "');";
+}
+
+my $head_song_pl = "\n\n--Song_Playlist\n\n";
+
+print {$out} $head_song_pl;
+
+for my $playlist_name (sort keys %playlist_table)
+{
+    for my $playlist_song ( sort keys %{$playlist_table{$playlist_name}} )
+    {
+        print {$out}  "INSERT INTO song_playlist (song_id, playlist_id) VALUES ( ";
+        print {$out}  "(SELECT song_id FROM song WHERE itunes_id = " .$playlist_song. "),";
+        print {$out}  "(SELECT playlist_id FROM playlist WHERE playlist_name = '". $playlist_name ."')";
+        print {$out}  ");\n";
+    }
 }
 
 exit;
