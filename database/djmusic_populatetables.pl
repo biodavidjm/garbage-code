@@ -10,6 +10,15 @@ use Text::CSV;
 
 # system('clear');
 
+# # # # # #
+#
+# To Do
+#
+# - - - - - - -
+# Modify from the itunes database exclusively the ' as I have done with 'song'
+#
+# # # # # #
+
 my $script_name = "djmusic_populatetables.pl";
 
 # Validation section
@@ -58,7 +67,6 @@ my $c_movie    = 0;
 my $c_tvshow   = 0;
 my $c_albums   = 0;
 
-
 foreach my $line (<$FILE1>) {
     chomp($line);
     if ( ( $line =~ /<dict>/ ) & ( $c_dict != 3 ) ) {
@@ -83,16 +91,17 @@ foreach my $line (<$FILE1>) {
         }
         if ( $line =~ /<key>Name<\/key><string>(.*)<\/string>/ ) {
             $name = $1;
+            $name =~ s/\'//g;
             next;
         }
         if ( $line =~ /<key>Artist<\/key><string>(.*)<\/string>/ ) {
             $band = $1;
-            $band =~ s/[^a-zA-Z0-9]/ /g;
+            $band =~ s/\'//g;
             next;
         }
         if ( $line =~ /<key>Album<\/key><string>(.*)<\/string>/ ) {
             $album = $1;
-            $album =~ s/[^a-zA-Z0-9]/ /g;
+            $album =~ s/\'//g;
             next;
         }
         if ( $line =~ /<key>Year<\/key><integer>(.*)<\/integer>/ ) {
@@ -111,7 +120,7 @@ foreach my $line (<$FILE1>) {
             $genre = $1;
 
             # Needs to change weird characters by dash...
-            $genre =~ s/[^a-zA-Z0-9]/ /g;
+            $genre =~ s/\'//g;
             next;
         }
 
@@ -208,7 +217,6 @@ foreach my $line (<$FILE1>) {
 my $c_bands = keys %band_table;
 my $c_songs = keys %song_table;
 
-
 say "---- Stats --------------";
 say "Printed:     " . $c_total;
 say "  - Artist:     " . $c_bands;
@@ -220,15 +228,14 @@ say "Movies :     " . $c_movie;
 say "TV Show:     " . $c_tvshow;
 say "-------------------------";
 
+
 # OUTPUT FILE
 my $outfile = "pop_all_djmusic_tables.sql";
 
 open my $out, '>', $outfile
     or die "Big problem: I can't create '$outfile'";
 
-my $head_band = "
--- Band\n\n
-";
+my $head_band = "\n\n-- Band\n\n";
 
 print {$out} $head_band;
 
@@ -236,9 +243,7 @@ for my $artist ( sort keys %band_table ) {
     say {$out} "INSERT INTO band (band_name) VALUES ('" . $artist . "');";
 }
 
-my $head_album = "
--- Album\n\n
-";
+my $head_album = "\n\n-- Album\n\n";
 
 print {$out} $head_album;
 
@@ -251,28 +256,52 @@ for my $artist ( sort keys %album_table ) {
         # This can be null, so let's check and print it out correctly:
         my $album_year = $album_table{$artist}{$album};
         if ( $album_year =~ /NULL/ ) {
-            print {$out} $album_year. ",";
+            print {$out} $album_year . ",";
         }
         else {
             print {$out} "'" . $album_year . "',";
         }
 
-        print {$out} " (SELECT band_id FROM band WHERE band_name='"
-            . $artist
+        print {$out} " (SELECT band_id FROM band WHERE band_name='" . $artist
             . "'));\n";
     }
 }
 
-exit;
+my $head_song = "
+-- Song\n\n
+";
+
+print {$out} $head_song;
+
+# Order in the hash of array:
+# my @temp = ($band, $album, $name, $song_duration, $song_number, $style);
 
 for my $trackid ( sort { $a <=> $b } keys %song_table ) {
-    say "Track " . $trackid;
-    foreach my $i ( 0 .. $#{ $song_table{$trackid} } ) {
-        say "\t" . $song_table{$trackid}[$i];
+    print {$out} "INSERT INTO song (song_name, duration, track_number, itunes_id, album_id) VALUES (";
+    # song_name
+    print {$out} "'".$song_table{$trackid}[2]."',"; 
+    # duration
+    if ( $song_table{$trackid}[3] =~ /NULL/ ) {
+        print {$out} $song_table{$trackid}[3]. ",";
     }
+    else {
+        print {$out} "'" . $song_table{$trackid}[3] . "',";
+    }
+    # track number
+    if ( $song_table{$trackid}[4] =~ /NULL/ ) {
+        print {$out} $song_table{$trackid}[4]. ",";
+    }
+    else {
+        print {$out} "'" . $song_table{$trackid}[4] . "',";
+    }
+    # itunes_id
+    print {$out} "'".$trackid."',"; 
+    print {$out} "(SELECT album.album_id FROM album JOIN band ON band.band_id = album.band_id WHERE album.album_name = '".$song_table{$trackid}[1]."' AND band.band_name = '".$song_table{$trackid}[0]."'));\n";
 }
 
-#----- THE END
+exit;
+
+#---------------------------------------------------- SUBROUTINES
 
 sub get_file {
 

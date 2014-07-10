@@ -14,12 +14,15 @@ create table album
     CONSTRAINT album_band_id_fk FOREIGN KEY(band_id) REFERENCES band(band_id)
 );
 
+-- ALTER TABLE song ADD COLUMN itunes_id integer
+
 create table song
 (
-    song_id                 serial           PRIMARY KEY,
+    song_id                 integer           PRIMARY KEY,
     song_name               varchar(128)        not null,
     duration                date                        ,
     track_number            integer                     ,  
+    itunes_id               integer                     ,
     album_id                integer             not null,
     CONSTRAINT song_album_id_fk FOREIGN KEY(album_id) REFERENCES album(album_id)
 );
