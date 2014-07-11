@@ -366,24 +366,40 @@ for my $playlist_name (sort keys %playlist_table)
 
 my $head_style = "\n\n--Style\n\n";
 
+print {$out} $head_style;
+
 for my $style (keys %style_table)
 {
-    say "INSERT INTO style (style_name) VALUES ('". $style . "')";
+    say {$out} "INSERT INTO style (style_name) VALUES ('". $style . "');";
 }
 
-exit;
+# Adding the style "indefinido" solves the problem of the song_style table
+# where the style_id is required as not null.
+say {$out} "INSERT INTO style (style_name) VALUES ('Indefinido');";
 
 
 my $head_ss = "\n\n--Song_Style\n\n";
 # my @temp = ($band, $album, $name, $song_duration, $song_number, $style);
 
-for my $trackid ( sort { $a <=> $b } keys %song_table ) {
-    print "INSERT INTO song_style (song_id, style_id) VALUES (";
+print {$out} $head_ss;
 
-        #*********
+for my $trackid ( sort { $a <=> $b } keys %song_table ) {
+    print {$out}  "INSERT INTO song_style (song_id, style_id) VALUES (";
+    print {$out}  "(SELECT song_id FROM song WHERE itunes_id = '".$trackid."'),";
+    if ($song_table{$trackid}[5]=~ /NULL/)
+    {
+        print {$out}  "(SELECT style_id FROM style WHERE style_name = 'Indefinido')";
+    }
+    else
+    {
+        print {$out}  "(SELECT style_id FROM style WHERE style_name = '".$song_table{$trackid}[5]."')";
+    }
+    print {$out}  ");\n";
 }
 
-
+# This is basically done. The remaining tables should be done by hand once I have the information
+# The only one that could potentially be added would be fan and band_fand, since
+# I could use the genre as a source (Sara and Nieves, all the others are David)
 
 exit;
 
@@ -425,7 +441,7 @@ perl djmusic_populatetables.pl
 
 =head1 OUTPUT
 
-YYYYMMDD_HHMMSS.gp2protein.gpi_dicty
+pop_all_djmusic_tables.sql
 
 =head1 DESCRIPTION
 
