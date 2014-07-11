@@ -89,10 +89,11 @@ create table band_source
     CONSTRAINT band_source_source_id_fk FOREIGN KEY(source_id) REFERENCES source(source_id)
 );
 
+-- ALTER TABLE fan RENAME COLUMN fan_fname TO fan_name;
 create table fan
 (
     fan_id                  serial          PRIMARY KEY,
-    fan_fname               varchar(128)       not null
+    fan_name               varchar(128)       not null
 );
 
 create table band_fan

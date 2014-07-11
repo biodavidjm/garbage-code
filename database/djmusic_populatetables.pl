@@ -41,9 +41,7 @@ my $flag_playlist = 0;
 my $flag_array = 0;
 
 # SCALARS FOR THE DATA.
-my ( $track_id, $track_number, $duration, $name, $band, $album, $year,
-    $genre )
-    = '';
+my ( $track_id, $track_number, $duration, $name, $band, $album, $year, $genre, $fan ) = '';
 
 # BAND TABLE
 # Using hash to easily avoid redundancy
@@ -66,6 +64,12 @@ my $playlist_song_id = '';
 
 # Styles
 my %style_table = ();
+
+# Fan
+# It uses the "grouping": Nieves, Sara if specified, David otherwise.
+my %fan_table = ();
+#$fan_table{$fan}{$band} = 1;
+
 
 # my @temp = ($band,$album,$name,$song_duration,$song_number,$style);
 # $song_table{$track_id} = [@temp];
@@ -132,13 +136,23 @@ foreach my $line (<$FILE1>) {
             }
             next;
         }
+        if ($line =~ /<key>Grouping<\/key><string>(.*)<\/string>/)
+        {
+            $fan = $1;
+            if ($fan !~ /(Sara|Nieves)/)
+            {
+                $fan = "David";
+                # print $band. " = ". $fan."\n";
+            }
+            next;
+        }
 
         # DO NOT PROCESS:
         # PODCASTS -
         if ( $line =~ /<key>Podcast<\/key><true\/>/ ) {
             $flag = 0;
             (   $track_id, $track_number, $duration, $name, $band, $album,
-                $year, $genre
+                $year, $genre, $fan
             ) = '';
             $c_podcasts++;
         }
@@ -147,7 +161,7 @@ foreach my $line (<$FILE1>) {
         if ( $line =~ /<key>iTunesU<\/key><true\/>/ ) {
             $flag = 0;
             (   $track_id, $track_number, $duration, $name, $band, $album,
-                $year, $genre
+                $year, $genre, $fan
             ) = '';
             $c_itunesu++;
         }
@@ -156,7 +170,7 @@ foreach my $line (<$FILE1>) {
         if ( $line =~ /<key>Movie<\/key><true\/>/ ) {
             $flag = 0;
             (   $track_id, $track_number, $duration, $name, $band, $album,
-                $year, $genre
+                $year, $genre, $fan
             ) = '';
             $c_movie++;
         }
@@ -165,7 +179,7 @@ foreach my $line (<$FILE1>) {
         if ( $line =~ /<key>TV Show<\/key><true\/>/ ) {
             $flag = 0;
             (   $track_id, $track_number, $duration, $name, $band, $album,
-                $year, $genre
+                $year, $genre, $fan
             ) = '';
             $c_tvshow++;
         }
@@ -190,6 +204,9 @@ foreach my $line (<$FILE1>) {
                         $song_number = check_empty($track_number);
                         my $style = '';
                         $style = check_empty($genre);
+                        my $fan_name = '';
+                        $fan_name = check_empty_fan($fan);
+
 
                         # FILLING UP DATA STRUCTURE
                         # SONGs
@@ -210,7 +227,14 @@ foreach my $line (<$FILE1>) {
                             $c_albums++;
                         }
 
+                        # FAN
+                        # And the fan, which it has a value for sure (Nieves, David or Sara)
+                        if ( !$fan_table{$fan_name}{$band} )
+                        {
+                            $fan_table{$fan_name}{$band} = 1;    
+                        }
                         $c_total++;
+
                     }
                 }
             }
@@ -218,7 +242,7 @@ foreach my $line (<$FILE1>) {
 
         # And reset before leaving
         (   $track_id, $track_number, $duration, $name, $band, $album, $year,
-            $genre
+            $genre, $fan
         ) = '';
     } # if ( ( $line =~ /<\/dict>/ ) & ( $flag == 1 ) )
 
@@ -255,7 +279,6 @@ foreach my $line (<$FILE1>) {
     }
 
 } # End of main foreach my $line (<$FILE1>)
-
 
 my $c_bands = keys %band_table;
 my $c_songs = keys %song_table;
@@ -397,6 +420,29 @@ for my $trackid ( sort { $a <=> $b } keys %song_table ) {
     print {$out}  ");\n";
 }
 
+my $head_fan = "\n\n--Fan\n\n";
+
+print {$out} $head_fan;
+
+for my $fan (keys %fan_table)
+{
+    print {$out} "INSERT INTO fan (fan_name) VALUES ('".$fan."');\n";
+}
+
+my $head_band_fan = "\n\n--Band_Fan\n\n";
+
+print {$out} $head_band_fan;
+
+for my $fan (keys %fan_table)
+{
+    for my $band (keys %{$fan_table{$fan}})
+    {
+        print {$out} "INSERT INTO band_fan VALUES (";
+        print {$out} "(SELECT band_id FROM band WHERE band_name = '".$band."'), ";
+        print {$out} "(SELECT fan_id FROM fan WHERE fan_name = '".$fan."'));\n";
+    }
+}
+
 # This is basically done. The remaining tables should be done by hand once I have the information
 # The only one that could potentially be added would be fan and band_fand, since
 # I could use the genre as a source (Sara and Nieves, all the others are David)
@@ -427,6 +473,17 @@ sub check_empty {
     }
     else {
         my $nulo = "NULL";
+        return $nulo;
+    }
+}
+
+sub check_empty_fan {
+    my ($whatever) = @_;
+    if ($whatever) {
+        return $whatever;
+    }
+    else {
+        my $nulo = "David";
         return $nulo;
     }
 }
