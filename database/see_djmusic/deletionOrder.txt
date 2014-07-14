@@ -1,10 +1,11 @@
+song_style
 song_playlist
 band_source
 band_show
 band_fan
-style
 song
 album
+style
 source
 show
 playlist

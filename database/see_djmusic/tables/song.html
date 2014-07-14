@@ -116,9 +116,9 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
  Parent cannot be deleted if children exist'>&nbsp;R</span></td>
    </tr>
    <tr class='relative odd' valign='top'>
-    <td class='relatedTable detail' title="style.song_id refs song.song_id via song_style_song_id_fk"><a href='style.html'>style</a><span class='relatedKey'>.song_id</span>
+    <td class='relatedTable detail' title="song_style.song_id refs song.song_id via song_playlist_song_id_fk"><a href='song_style.html'>song_style</a><span class='relatedKey'>.song_id</span>
     </td>
-    <td class='constraint detail'>song_style_song_id_fk<span title='Restrict delete:
+    <td class='constraint detail'>song_playlist_song_id_fk<span title='Restrict delete:
  Parent cannot be deleted if children exist'>&nbsp;R</span></td>
    </tr>
   </table>
@@ -138,17 +138,6 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
  <td class='comment detail'></td>
 </tr>
 <tr class='odd'>
- <td class='detail'>duration</td>
- <td class='detail'>date</td>
- <td class='detail' align='right'>13</td>
- <td class='detail' align='center' title='nullable'>&nbsp;&radic;&nbsp;</td>
- <td class='detail' align='center'></td>
- <td class='detail' align='right'>null</td>
- <td class='detail'></td>
- <td class='detail'> </td>
- <td class='comment detail'></td>
-</tr>
-<tr class='even'>
  <td class='detail'>track_number</td>
  <td class='detail'>int4</td>
  <td class='detail' align='right'>10</td>
@@ -159,7 +148,7 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
  <td class='detail'> </td>
  <td class='comment detail'></td>
 </tr>
-<tr class='odd'>
+<tr class='even'>
  <td class='detail'>album_id</td>
  <td class='detail'>int4</td>
  <td class='detail' align='right'>10</td>
@@ -169,7 +158,7 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
  <td class='detail'></td>
  <td class='detail'>
   <table border='0' width='100%' cellspacing='0' cellpadding='0'>
-   <tr class='relative odd' valign='top'>
+   <tr class='relative even' valign='top'>
     <td class='relatedTable detail' title="song.album_id refs album.album_id via song_album_id_fk"><a href='album.html'>album</a><span class='relatedKey'>.album_id</span>
     </td>
     <td class='constraint detail'>song_album_id_fk<span title='Restrict delete:
@@ -179,8 +168,30 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
  </td>
  <td class='comment detail'></td>
 </tr>
+<tr class='odd'>
+ <td class='detail'>itunes_id</td>
+ <td class='detail'>int4</td>
+ <td class='detail' align='right'>10</td>
+ <td class='detail' align='center' title='nullable'>&nbsp;&radic;&nbsp;</td>
+ <td class='detail' align='center'></td>
+ <td class='detail' align='right'>null</td>
+ <td class='detail'></td>
+ <td class='detail'> </td>
+ <td class='comment detail'></td>
+</tr>
+<tr class='even'>
+ <td class='detail'>duration</td>
+ <td class='detail'>int4</td>
+ <td class='detail' align='right'>10</td>
+ <td class='detail' align='center' title='nullable'>&nbsp;&radic;&nbsp;</td>
+ <td class='detail' align='center'></td>
+ <td class='detail' align='right'>null</td>
+ <td class='detail'></td>
+ <td class='detail'> </td>
+ <td class='comment detail'></td>
+</tr>
 </table>
-<p title='5 columns'>Table contained 0 rows at Fri Jun 06 11:01 CDT 2014<p/>
+<p title='6 columns'>Table contained 12,977 rows at Mon Jul 14 11:38 CDT 2014<p/>
 </td></tr></table>
 <div class='indent'>
 <b>Indexes:</b>
@@ -206,19 +217,20 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 <br><form action='get'><b>Close relationships</b><span class='degrees' id='degrees' title='Detail diminishes with increased separation from song'>
 &nbsp;within <label for='oneDegree'><input type='radio' name='degrees' id='oneDegree' checked>one</label>  <label for='twoDegrees'><input type='radio' name='degrees' id='twoDegrees'>two degrees</label> of separation</span><b>:</b></form>
 <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="song.html" title="song" alt="" coords="177,86,391,261">
-<area shape="rect" id="node2" href="album.html" title="album" alt="" coords="5,181,133,328">
-<area shape="rect" id="node3" href="song_playlist.html" title="song_playlist" alt="" coords="435,5,551,107">
-<area shape="rect" id="node4" href="style.html" title="style" alt="" coords="435,125,551,249">
+<area shape="rect" id="node1" href="song.html" title="song" alt="" coords="205,63,436,260">
+<area shape="rect" id="node2" href="album.html" title="album" alt="" coords="5,135,161,281">
+<area shape="rect" id="node3" href="song_playlist.html" title="song_playlist" alt="" coords="484,5,628,107">
+<area shape="rect" id="node4" href="song_style.html" title="song_style" alt="" coords="480,124,632,225">
 </map>
   <a name='diagram'><img id='oneDegreeImg' src='../diagrams/song.1degree.png' usemap='#oneDegreeRelationshipsDiagram' class='diagram' border='0' alt='' align='left'></a>
 <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="album.html" title="album" alt="" coords="165,145,293,291">
-<area shape="rect" id="node2" href="band.html" title="band" alt="" coords="5,212,121,291">
-<area shape="rect" id="node3" href="song.html" title="song" alt="" coords="337,49,551,224">
-<area shape="rect" id="node4" href="song_playlist.html" title="song_playlist" alt="" coords="595,183,711,285">
-<area shape="rect" id="node5" href="playlist.html" title="playlist" alt="" coords="386,241,502,320">
-<area shape="rect" id="node6" href="style.html" title="style" alt="" coords="595,5,711,129">
+<area shape="rect" id="node1" href="album.html" title="album" alt="" coords="181,174,337,321">
+<area shape="rect" id="node2" href="band.html" title="band" alt="" coords="5,241,137,320">
+<area shape="rect" id="node3" href="song.html" title="song" alt="" coords="381,102,612,299">
+<area shape="rect" id="node4" href="song_playlist.html" title="song_playlist" alt="" coords="660,45,804,146">
+<area shape="rect" id="node5" href="playlist.html" title="playlist" alt="" coords="435,5,559,84">
+<area shape="rect" id="node6" href="song_style.html" title="song_style" alt="" coords="656,199,808,301">
+<area shape="rect" id="node7" href="style.html" title="style" alt="" coords="431,317,563,396">
 </map>
 
   <a name='diagram'><img id='twoDegreesImg' src='../diagrams/song.2degrees.png' usemap='#twoDegreesRelationshipsDiagram' class='diagram' border='0' alt='' align='left'></a>

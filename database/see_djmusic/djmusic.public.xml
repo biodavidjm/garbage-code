@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <database name="djmusic" schema="public" type="PostgreSQL - 9.3.1">
    <tables>
-      <table name="album" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="album" numRows="1270" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('album_album_id_seq'::regclass)" digits="0" id="0" name="album_id" nullable="false" remarks="" size="10" type="serial">
             <child column="album_id" foreignKey="song_album_id_fk" implied="false" onDeleteCascade="false" table="song"/>
          </column>
@@ -15,7 +15,7 @@
             <column ascending="true" name="album_id"/>
          </index>
       </table>
-      <table name="band" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="band" numRows="645" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('band_band_id_seq'::regclass)" digits="0" id="0" name="band_id" nullable="false" remarks="" size="10" type="serial">
             <child column="band_id" foreignKey="album_band_id_fk" implied="false" onDeleteCascade="false" table="album"/>
             <child column="band_id" foreignKey="band_fan_band_id_fk" implied="false" onDeleteCascade="false" table="band_fan"/>
@@ -29,7 +29,7 @@
             <column ascending="true" name="band_id"/>
          </index>
       </table>
-      <table name="band_fan" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="band_fan" numRows="653" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" digits="0" id="0" name="band_id" nullable="false" remarks="" size="10" type="int4">
             <parent column="band_id" foreignKey="band_fan_band_id_fk" implied="false" onDeleteCascade="false" table="band"/>
          </column>
@@ -53,17 +53,17 @@
             <parent column="source_id" foreignKey="band_source_source_id_fk" implied="false" onDeleteCascade="false" table="source"/>
          </column>
       </table>
-      <table name="fan" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="fan" numRows="3" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('fan_fan_id_seq'::regclass)" digits="0" id="0" name="fan_id" nullable="false" remarks="" size="10" type="serial">
             <child column="fan_id" foreignKey="band_fan_fan_id_fk" implied="false" onDeleteCascade="false" table="band_fan"/>
          </column>
-         <column autoUpdated="false" digits="0" id="1" name="fan_fname" nullable="false" remarks="" size="128" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="1" name="fan_name" nullable="false" remarks="" size="128" type="varchar"/>
          <primaryKey column="fan_id" sequenceNumberInPK="1"/>
          <index name="fan_pkey" unique="true">
             <column ascending="true" name="fan_id"/>
          </index>
       </table>
-      <table name="playlist" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="playlist" numRows="39" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('playlist_playlist_id_seq'::regclass)" digits="0" id="0" name="playlist_id" nullable="false" remarks="" size="10" type="serial">
             <child column="playlist_id" foreignKey="song_playlist_playlist_fk" implied="false" onDeleteCascade="false" table="song_playlist"/>
          </column>
@@ -86,28 +86,37 @@
             <column ascending="true" name="show_id"/>
          </index>
       </table>
-      <table name="song" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="song" numRows="12977" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('song_song_id_seq'::regclass)" digits="0" id="0" name="song_id" nullable="false" remarks="" size="10" type="serial">
             <child column="song_id" foreignKey="song_playlist_song_id_fk" implied="false" onDeleteCascade="false" table="song_playlist"/>
-            <child column="song_id" foreignKey="song_style_song_id_fk" implied="false" onDeleteCascade="false" table="style"/>
+            <child column="song_id" foreignKey="song_playlist_song_id_fk" implied="false" onDeleteCascade="false" table="song_style"/>
          </column>
          <column autoUpdated="false" digits="0" id="1" name="song_name" nullable="false" remarks="" size="128" type="varchar"/>
-         <column autoUpdated="false" digits="0" id="2" name="duration" nullable="true" remarks="" size="13" type="date"/>
-         <column autoUpdated="false" digits="0" id="3" name="track_number" nullable="true" remarks="" size="10" type="int4"/>
-         <column autoUpdated="false" digits="0" id="4" name="album_id" nullable="false" remarks="" size="10" type="int4">
+         <column autoUpdated="false" digits="0" id="2" name="track_number" nullable="true" remarks="" size="10" type="int4"/>
+         <column autoUpdated="false" digits="0" id="3" name="album_id" nullable="false" remarks="" size="10" type="int4">
             <parent column="album_id" foreignKey="song_album_id_fk" implied="false" onDeleteCascade="false" table="album"/>
          </column>
+         <column autoUpdated="false" digits="0" id="4" name="itunes_id" nullable="true" remarks="" size="10" type="int4"/>
+         <column autoUpdated="false" digits="0" id="5" name="duration" nullable="true" remarks="" size="10" type="int4"/>
          <primaryKey column="song_id" sequenceNumberInPK="1"/>
          <index name="song_pkey" unique="true">
             <column ascending="true" name="song_id"/>
          </index>
       </table>
-      <table name="song_playlist" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="song_playlist" numRows="6720" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" digits="0" id="0" name="song_id" nullable="false" remarks="" size="10" type="int4">
             <parent column="song_id" foreignKey="song_playlist_song_id_fk" implied="false" onDeleteCascade="false" table="song"/>
          </column>
          <column autoUpdated="false" digits="0" id="1" name="playlist_id" nullable="false" remarks="" size="10" type="int4">
             <parent column="playlist_id" foreignKey="song_playlist_playlist_fk" implied="false" onDeleteCascade="false" table="playlist"/>
+         </column>
+      </table>
+      <table name="song_style" numRows="12977" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="song_id" nullable="false" remarks="" size="10" type="int4">
+            <parent column="song_id" foreignKey="song_playlist_song_id_fk" implied="false" onDeleteCascade="false" table="song"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="style_id" nullable="false" remarks="" size="10" type="int4">
+            <parent column="style_id" foreignKey="song_playlist_style_id_fk" implied="false" onDeleteCascade="false" table="style"/>
          </column>
       </table>
       <table name="source" numRows="0" remarks="" schema="public" type="TABLE">
@@ -121,12 +130,11 @@
             <column ascending="true" name="source_id"/>
          </index>
       </table>
-      <table name="style" numRows="0" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('style_style_id_seq'::regclass)" digits="0" id="0" name="style_id" nullable="false" remarks="" size="10" type="serial"/>
-         <column autoUpdated="false" digits="0" id="1" name="style_name" nullable="false" remarks="" size="128" type="varchar"/>
-         <column autoUpdated="false" digits="0" id="2" name="song_id" nullable="false" remarks="" size="10" type="int4">
-            <parent column="song_id" foreignKey="song_style_song_id_fk" implied="false" onDeleteCascade="false" table="song"/>
+      <table name="style" numRows="157" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('style_style_id_seq'::regclass)" digits="0" id="0" name="style_id" nullable="false" remarks="" size="10" type="serial">
+            <child column="style_id" foreignKey="song_playlist_style_id_fk" implied="false" onDeleteCascade="false" table="song_style"/>
          </column>
+         <column autoUpdated="false" digits="0" id="1" name="style_name" nullable="false" remarks="" size="128" type="varchar"/>
          <primaryKey column="style_id" sequenceNumberInPK="1"/>
          <index name="style_pkey" unique="true">
             <column ascending="true" name="style_id"/>
