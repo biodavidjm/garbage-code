@@ -50,11 +50,12 @@ my %band_table = ();
 # ALBUM TABLE
 # they Key has to be the band name, since one album could have two different bands.
 my %album_table = ();
-
 # $album_table{$band}{$album} = $album_year;
 
 # Song
 # it contains all the information, although when filling up the table in the database, it needs to check album and band
+# my @temp = ( $band, $album, $name, $song_duration, $song_number, $style);
+# $song_table{$track_id} = [@temp];
 my %song_table = ();
 
 # Playlist
@@ -363,7 +364,7 @@ for my $trackid ( sort { $a <=> $b } keys %song_table ) {
     print {$out} "(SELECT album.album_id FROM album JOIN band ON band.band_id = album.band_id WHERE album.album_name = '".$song_table{$trackid}[1]."' AND band.band_name = '".$song_table{$trackid}[0]."'));\n";
 }
 
-my $head_pl = "\n\n--Playlist\n\n";
+my $head_pl = "\n\n-- Playlist\n\n";
 
 print {$out} $head_pl;
 
@@ -372,7 +373,7 @@ for my $playlist_name (sort keys %playlist_table)
     say {$out} "INSERT INTO playlist (playlist_name) VALUES ('" .$playlist_name. "');";
 }
 
-my $head_song_pl = "\n\n--Song_Playlist\n\n";
+my $head_song_pl = "\n\n-- Song_Playlist\n\n";
 
 print {$out} $head_song_pl;
 
@@ -387,7 +388,7 @@ for my $playlist_name (sort keys %playlist_table)
     }
 }
 
-my $head_style = "\n\n--Style\n\n";
+my $head_style = "\n\n-- Style\n\n";
 
 print {$out} $head_style;
 
@@ -401,7 +402,7 @@ for my $style (keys %style_table)
 say {$out} "INSERT INTO style (style_name) VALUES ('Indefinido');";
 
 
-my $head_ss = "\n\n--Song_Style\n\n";
+my $head_ss = "\n\n-- Song_Style\n\n";
 # my @temp = ($band, $album, $name, $song_duration, $song_number, $style);
 
 print {$out} $head_ss;
@@ -420,7 +421,7 @@ for my $trackid ( sort { $a <=> $b } keys %song_table ) {
     print {$out}  ");\n";
 }
 
-my $head_fan = "\n\n--Fan\n\n";
+my $head_fan = "\n\n-- Fan\n\n";
 
 print {$out} $head_fan;
 
@@ -429,7 +430,7 @@ for my $fan (keys %fan_table)
     print {$out} "INSERT INTO fan (fan_name) VALUES ('".$fan."');\n";
 }
 
-my $head_band_fan = "\n\n--Band_Fan\n\n";
+my $head_band_fan = "\n\n-- Band_Fan\n\n";
 
 print {$out} $head_band_fan;
 
@@ -505,9 +506,6 @@ pop_all_djmusic_tables.sql
 It parses the iTunes xml file and creates a sql file which will insert all the
 values in the database. Things to take into account:  
 
-1. It should start by the tables providing foreing keys to other tables,
-because then you will need the identifer to related them to other tables.
-
-2. The only special character that I need to be worry about is ', which should
+1. The only special character that I need to be worry about is ', which should
 be replace by ''
 

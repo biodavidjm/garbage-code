@@ -20,6 +20,9 @@ The script `get_xml_structure.pl` uses both libraries. As a result, it creates a
 
 The problem with my music xml file is that it is huge. Therefore, a better approach to process my file should be using XML::LibXML. But first, I have to understand what XPath is about, and a good beginning is to follow [this tutorial at www3 website](http://www.w3schools.com/XPath/)
 
+##### local::lib
+
+This module creates and uses a local lib/ for perl modules with PERL5LIB
 
 ### Database related
 Check the folder to see all the scripts.
