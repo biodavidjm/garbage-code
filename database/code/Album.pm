@@ -4,28 +4,57 @@ use Moose;
 use Method::Signatures;
 use feature qw/say/;
 
-extends 'Band';
-
 has 'album_name' => (
     is       => 'rw',
     isa      => 'Str',
     required => 1,
-    reader   => 'get_album_name'
+    reader   => 'get_album_name',
+    writer   => 'set_album_name'
 );
 
 has 'album_year' => (
     is      => 'rw',
     isa     => 'Int',
     default => "NULL",
-    reader  => 'get_year'
+    reader  => 'get_album_year',
+    writer  => 'set_album_year'
 );
 
-method set_album_name (Str $key){
-	return $self->album_name($key);
+
+method add_band() {
+
 }
 
-method set_album_year (Int $key) {
-	return $self->album_year($key);
+method delete_band() {
+
+}
+
+method add_song() {
+
+}
+
+method delete_song(){
+
+}
+
+method add_cover() {
+
+}
+
+method delete_cover() {
+
+}
+
+method add_to_playlist () {
+
+}
+
+method delete_from_playlist () {
+    
+}
+
+func album_duration() {
+
 }
 
 1;
