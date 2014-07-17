@@ -51,16 +51,6 @@ Learning to run Modern Perl, i.e., the way the world's most effective Perl progr
 * Class, from its own definition: A role is something that classes do. Usually, a role encapsulates some piece of behavior or state that can be shared between classes. It is important to understand that roles are not classes. You cannot inherit from a role, and a role cannot be instantiated. We sometimes say that ***roles are consumed, either by classes or other roles***
 
 
-## DATABASE
-***
-
-### SQL
-List of SQL statements I have tried so far (see the - `SQL.md` file in the `database` directory)
-
-### Database schemas
-Here is where I keep the schemas of the databases I have created. I created the schemas with bin/schemaSpy5
-
-
 ## HTML-CSS
 ***
 See the list of pages in the folder.
