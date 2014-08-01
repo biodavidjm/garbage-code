@@ -8,17 +8,17 @@ use feature qw/say/;
 
 # BANK CLASSES
 # use BankAccount;
-# use CheckingAccount;
+use CheckingAccount;
 
-# my $money = CheckingAccount->new();
+my $money = CheckingAccount->new();
 
-# # my $money = BankAccount->new();
+# my $money = BankAccount->new();
 
-# say "First Checking Account balance: " . $money->balance();
+say "First Checking Account balance: " . $money->balance();
 
-# say "\tNow I am gonna transfer 10 dollars";
-# $money->deposit(10);
-# say "\tYour balance: " . $money->balance();
+say "\tNow I am gonna transfer 10 dollars";
+$money->deposit(10);
+say "\tYour balance: " . $money->balance();
 
 # say "Let's withdraw 15 bucks";
 
@@ -54,33 +54,33 @@ use feature qw/say/;
 # etc.
 # It requires perl-5.18.2@cookbooks
 
-use Address;
-use Company;
+# use Address;
+# use Company;
 
-my $address = Address->new(
-    street   => '200 N Wolcott Ave',
-    city     => 'Chicago',
-    state    => 'IL',
-    zip_code => '60622',
-);
+# my $address = Address->new(
+#     street   => '200 N Wolcott Ave',
+#     city     => 'Chicago',
+#     state    => 'IL',
+#     zip_code => '60622',
+# );
 
-say "My address is: " . $address->street();
-say $address->city();
-say $address->state();
-$address->city('Oak Park');
-say "Wait a minute, my city is " . $address->city();
+# say "My address is: " . $address->street();
+# say $address->city();
+# say $address->state();
+# $address->city('Oak Park');
+# say "Wait a minute, my city is " . $address->city();
 
-say "\nCompany time-----";
-my $company = Company->new( name => 'McDonnald', address => $address);
+# say "\nCompany time-----";
+# my $company = Company->new( name => 'McDonnald', address => $address);
 
-# city     => 'Chicago',
-#         state    => 'IL',
-#         zip_code => '60622',));
+# # city     => 'Chicago',
+# #         state    => 'IL',
+# #         zip_code => '60622',));
 
 
-say "Corporation: ", $company->name();
-say $company->address->zip_code;
+# say "Corporation: ", $company->name();
+# say $company->address->zip_code;
 
-$company->address();
+# $company->address();
 
 
