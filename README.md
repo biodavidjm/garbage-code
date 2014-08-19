@@ -54,3 +54,8 @@ Learning to run Modern Perl, i.e., the way the world's most effective Perl progr
 ## HTML-CSS
 ***
 See the list of pages in the folder.
+
+
+## Javascript
+***
+See the folder `scripts` within `javascript`. The html file `index.html` tests some of the `.js` files of the folder.
