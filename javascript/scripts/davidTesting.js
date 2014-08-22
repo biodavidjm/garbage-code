@@ -1,4 +1,4 @@
-//Javascript file for testing purposes
+	//Javascript file for testing purposes
 console.log("Train #"+1+" is running.");
 console.log("Train #"+2+" is running dude.");
 console.log("Yeah, train #"+3+" is also running!\n");
@@ -50,6 +50,12 @@ for (var generators = 1; generators <= totalGen; generators++ )
 	}
 }
 
+alert("Welcome to our page");
+var userName = prompt("What is your name?");
+confirm("dude, are you are " +userName+ "?");
 
-
+var gotName = false;
+while(gotName == false){
+    var userName = prompt("Yo passenger! What's your name?");
+}
 

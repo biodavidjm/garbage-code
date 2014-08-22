@@ -1,0 +1,19 @@
+{
+  "name": "angular-unicorn-directive",
+  "version": "0.0.2",
+  "main": "./unicorn.js",
+  "dependencies": {
+    "angular": "~1.0.4"
+  },
+  "homepage": "https://github.com/btford/angular-unicorn-directive",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.2",
+    "commit": "f998ec48765637b53ef0d09589a043ae05e62049"
+  },
+  "_source": "git://github.com/btford/angular-unicorn-directive.git",
+  "_target": "~0.0.2",
+  "_originalSource": "angular-unicorn-directive",
+  "_direct": true
+}
