@@ -59,3 +59,15 @@ while(gotName == false){
     var userName = prompt("Yo passenger! What's your name?");
 }
 
+// Anonymous functions
+// Function on the fly: it will be held in memory only when it is used.
+var diff = function (a,b) {
+	return a*a - b*b;
+};
+
+
+
+console.log(diff);
+
+
+
