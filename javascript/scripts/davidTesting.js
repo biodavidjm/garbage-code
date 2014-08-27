@@ -1,4 +1,4 @@
-	//Javascript file for testing purposes
+//Javascript file for testing purposes	
 console.log("Train #"+1+" is running.");
 console.log("Train #"+2+" is running dude.");
 console.log("Yeah, train #"+3+" is also running!\n");
@@ -65,9 +65,4 @@ var diff = function (a,b) {
 	return a*a - b*b;
 };
 
-
-
 console.log(diff);
-
-
-
