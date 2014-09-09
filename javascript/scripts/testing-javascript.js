@@ -296,7 +296,7 @@ function makeTargetAssigner( sharks, targets ){
     return function(shark){
       for (var i=0; i<sharks.length; i++){
         if (sharks[i]==shark){
-          alert("What up, " +
+          console.log("What up, " +
             shark +
             "!\n" +
             "There've been " +
@@ -314,3 +314,223 @@ function makeTargetAssigner( sharks, targets ){
 var getTargetFor = makeTargetAssigner(  listOfSharks,
                                         listOfTargets );
 getTargetFor("Ice Teeth");
+
+// Level 3, the importance of load order: hoisting 
+// 1. All var gets declared to undefined first
+// 2. functions are overwrite according to the order they are in the code
+
+// All declared variables are first manually initialized to an undefined value
+// and come first in the load order.
+
+// All loaded functions that end up being overwritten by other functions with the
+// same name will just disappear from their current place in the load order (and
+// will not be seen in your answer).
+
+// Declared functions that end up replacing other functions, however, will NOT
+// take the order place of the previous version, but instead will just fall into
+// the load order behind existing loaded functions.
+
+// All unreachable executable code that follows a return statement (where the
+// function ends) will disappear from your answer.
+
+// Do not understand what the hell were they asking for. They should have
+// asked: "Please, rewrite the following piece of code in the way it will be
+// executed by the compiler...
+
+function theBridgeOfHoistingDoom () {
+  function balrog(){
+    return "fire";
+  }
+  var ring;
+  function elf(){
+    return "pointy ears";
+  }
+  ring = wizard;
+  wizard = balrog;
+  return wizard();
+  function balrog(){
+    return "whip";
+  }
+  function wizard(){
+    return "white";
+  }
+  var power = ring();
+  return elf();
+  function elf(){
+    return "immortal";
+  }
+}
+
+// And the right answer would be:
+function theBridgeOfHoistingDoom () {
+  var ring = undefined;
+  var power = undefined;
+
+  function balrog(){
+    return "whip";
+  }
+  function elf(){
+    return "immortal";
+  }
+  function wizard(){
+    return "white";
+  }
+  ring = wizard;
+  wizard = balrog;
+  return wizard();
+}
+
+// FIND THE ERROR HERE
+function theBridgeOfHoistingDoom( ){
+  var sword = undefined;
+  var dwarf = undefined;
+  var fall = undefined;
+  var ring = undefined;
+  function fellowship(){
+    return "friends";
+  }
+  sword = "sting";
+  dwarf = function (){ 
+    return "axe";
+  }
+  fall = "Fly you fools!";
+  fellowship = function (){
+    return "broken";
+  }
+  ring();
+  return sword;
+}
+
+// Ring is not a function!!!!
+
+
+console.log("\n\nTIME FOR OBJECTS!!");
+console.log("**********************\n");
+
+var vehicle1 = {type: "Motorboat", capacity: 6, storedAt: "Ammunition Depot"};
+var vehicle2 = {type: "Jet Ski", capacity: 1, storedAt: "Reef Dock"};
+var vehicle3 = {type: "Submarine", capacity: 8, storedAt: "Underwater Outpost"};
+
+console.log(vehicle1.capacity);
+var vehicles = [vehicle1, vehicle2, vehicle3];
+var findVehicle = function(name, list)
+{
+  for (var i = 1; i<list.length;i++)
+  {
+    if (name == list[i].type)
+    {
+      return list[i].storedAt;
+    }
+  }
+};
+
+console.log(findVehicle("Submarine",vehicles));
+
+vehicle1.capacity = (vehicle1.capacity + 4);
+vehicle2.submersible  = false;
+vehicle3.weapon = "Torpedoes";
+vehicle1.submersible  = false;
+vehicle2.weapon = "Lasers";
+vehicle3.capacity = (vehicle3.capacity*2);
+vehicle1.weapon = "Rear-Mounted Slingshot";
+vehicle3.submersible  = true;
+
+// But if you want to asign a property with spaces, then you use this
+// notation:
+
+vehicle3["# of weapons"]=8;
+vehicle2["# of weapons"]=4;
+vehicle1["# of weapons"]=1;
+
+console.log(vehicle1.capacity);
+console.log(vehicle2.submersible);
+console.log(vehicle3.weapon);
+
+var superBlinders = [ ["Firelight", 4000], ["Solar Death Ray", 6000], ["Supernova", 12000] ];
+var lighthouseRock = {
+  gateClosed: true,
+  bulbs: [ 200, 500, 750 ],
+  capacity: 30,
+  secretPassageTo: "Underwater Outpost"
+};
+console.log(lighthouseRock.bulbs);
+delete lighthouseRock.bulbs;
+console.log(lighthouseRock.bulbs);
+
+var highestWattage = 0;
+var superBlinderName;
+for (var i = 0;i<superBlinders.length;i++)
+{
+  if(highestWattage < superBlinders[i][1])
+  {
+    highestWattage = superBlinders[i][1]
+    superBlinderName = superBlinders[i][0];
+  }
+}
+console.log(superBlinderName);
+
+// Let's see this:
+var superBlinders = [ ["Firestorm", 4000], ["Solar Death Ray", 6000], ["Supernova", 12000] ];
+var lighthouseRock = {
+  gateClosed: true,
+  weaponBulbs: superBlinders,
+  capacity: 30,
+  secretPassageTo: "Underwater Outpost",
+  numRangers: 0
+};
+//This is the function I had to create...
+function addRangers (theobject, location, name, skillz, station)
+{
+  theobject.numRangers++;
+  theobject["ranger"+theobject.numRangers] = {located: location, author: name, feature: skillz, place: station};
+}
+
+addRangers(lighthouseRock, "Here", "Nick Walsh", "magnification burn", 2);
+addRangers(lighthouseRock, "there","Drew Barontini", "uppercut launch", 3);
+addRangers(lighthouseRock, "whatever", "Christine Wong", "bomb defusing", 1);
+
+
+// Another exercise:
+var superBlinders = [ ["Firestorm", 4000], ["Solar Death Ray", 6000], ["Supernova", 12000] ];
+var lighthouseRock = {
+  gateClosed: true,
+  weaponBulbs: superBlinders,
+  capacity: 30,
+  secretPassageTo: "Underwater Outpost",
+  numRangers: 3,
+  ranger1: {name: "Nick Walsh", skillz: "magnification burn", station: 2},
+  ranger2: {name: "Drew Barontini", skillz: "uppercut launch", station: 3},
+  ranger3: {name: "Christine Wong", skillz: "bomb defusing", station: 1}
+};
+
+// function dontPanic (bigObject, location)
+// {
+//   console.log("Avast, me hearties!\nThere be Pirates nearby! Stations!\n");
+//   for (var i = 0)
+// }
+
+// NO idea what the hell they were asking. Unfair. I got confused with the location!!!
+// It was a piece of cake but they didn't stayed the problem properly.
+
+var superBlinders = [ ["Firestorm", 4000], ["Solar Death Ray", 6000], ["Supernova", 12000] ];
+var lighthouseRock = {
+  gateClosed: true,
+  weaponBulbs: superBlinders,
+  capacity: 30,
+  secretPassageTo: "Underwater Outpost",
+  numRangers: 3,
+  ranger1: {name: "Nick Walsh", skillz: "magnification burn", station: 2},
+  ranger2: {name: "Drew Barontini", skillz: "uppercut launch", station: 3},
+  ranger3: {name: "Christine Wong", skillz: "bomb defusing", station: 1}
+};
+function dontPanic (location){
+  var list = "";
+  for(var i = 1; i<=location.numRangers; i++){
+    list = list + location["ranger" + i].name + ", man the " +
+           location.weaponBulbs[location["ranger"+i].station-1][0] + 
+           "!\n";
+  }
+  console.log("Avast, me hearties!\n" + 
+        "There be Pirates nearby! Stations!\n" + list);
+}
+dontPanic(lighthouseRock);
