@@ -178,13 +178,11 @@ var puzzlers = [
     function ( a ) { return a * a + 4; },
     function ( a ) { return a % 5; }
 ];
+
 var start = 2;
-
-
 var applyAndEmpty = function( input, queue ) {
-
-	//testing this:
-	return input = queue[0](input);
+  //testing this:
+  return input = queue[0](input);
 
   // var length = queue.length;
   // for(var i = 0; i<length; i++){
@@ -192,6 +190,7 @@ var applyAndEmpty = function( input, queue ) {
   // }
   // return input;
 };
+
 console.log(applyAndEmpty(2, puzzlers));
 
 // Now, time to evaluate this: “What is obtained when the result of passing 9
@@ -239,6 +238,7 @@ function mystery3 ( param ){
   return mystery4;
 }
 
+
 // input = 
 // bonus = 
 // multiplier =
@@ -250,7 +250,7 @@ function warningMaker( obstacle ){
   return function ( number, location ) {
     count++;
     zones.push(location);
-    console.log("Beware! There have been " +
+    console.log("\nBeware! There have been " +
           obstacle +
           " sightings in the Cove today!\n" +
           number +
@@ -268,7 +268,7 @@ function warningMaker( obstacle ){
          );
     for (var i = 0; i<zones.length; i++)
     {
-      console.log(zones[i]);
+      console.log("\t"+(i+1)+". "+zones[i]);
     }
   };
 }
