@@ -59,3 +59,19 @@ See the list of pages in the folder.
 ## Javascript
 ***
 See the folder `scripts` within `javascript`. The html file `index.html` tests some of the `.js` files of the folder.
+
+## Ruby
+***
+I am using `rbenv` to manage the ruby installations. To use the ruby version installed with `rbenv` for a particular folder/project, just create a file in the target folder, and add the version of ruby that you want to use in that project.
+I created the file directly in the folder `garbage-code/ruby/`.
+
+### How to create a project (Rails)
+These are the basic steps to follow:
+
+```shell
+rails new davidjm
+cd davidjm
+bundle install #takes care of all the dependencies for that particular project and available in the Gemfile
+rails server
+```
+Then go to `http://localhost:3000/` and you'll see the project running...
