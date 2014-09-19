@@ -1,0 +1,48 @@
+<!doctype html>
+<html ng-app="store">
+  <head>
+    <title>My Angular App</title>
+
+	<!-- DAVIDJM styles -->
+    <link rel="stylesheet" href="appStyles.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+
+  </head>
+  <body ng-controller="StoreController as store">
+
+  	<h1> {{"Angular JS Course"}} </h1>
+  	<p> <em><strong>Learning Angular JS, the client side JavaScript framework for adding interactivity to HTML </em></strong></p>
+
+  	<p>
+  		Hey, I have {{20+18}} {{"dollars!"}}, and I want to buy...
+  	</p>
+
+  	<section>
+  		<ul class="nav nav-pills">
+  			<li> <a href ng-click="tab = 'Vaya tela, estoy apollargado'">Description</a> </li>
+  			<li> <a href ng-click="tab = 2">Specifications</a></li>
+  			<li> <a href ng-click="tab = 3">Reviews</a></li>
+  		</ul>
+  		{{tab}}
+  	</section>
+
+	<div ng-repeat="product in store.products" ng-hide="product.soldOut">
+	  	<h2> {{product.name}} </h2>
+	  	<h3> ${{product.price}} </h3>
+	  	<p> {{product.description}}</p>
+	  	<button ng-show="product.canPurchase">Add to Cart</button>
+
+	</div>
+
+  </body>
+</html>
