@@ -36,8 +36,6 @@ Check the folder to see all the scripts.
 #### DBIx::Class
 
 
-
-
 ### Modern Perl
 Learning to run Modern Perl, i.e., the way the world's most effective Perl programmers work, i.e., the way the world's most effective Perl programmers work. [Here is the link](http://modernperlbooks.com/books/modern_perl_2014/) to the last version (2014) of the book.
 
@@ -59,6 +57,10 @@ See the list of pages in the folder.
 ## Javascript
 ***
 See the folder `scripts` within `javascript`. The html file `index.html` tests some of the `.js` files of the folder.
+
+### Angular.JS
+The tests with `Angular` are within the Javascript folder.
+
 
 ## Ruby
 ***
