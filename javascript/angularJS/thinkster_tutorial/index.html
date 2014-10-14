@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html xmlns:ng="http://angularjs.org" ng-app>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,11 +9,23 @@
   </head>
   <body>
     
+
     <div class="row">
       <div class="large-12 columns">
-        <h1>Welcome to Foundation</h1>
+        <h1>Testing Angular</h1>
       </div>
     </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel" ng-app="">
+          <h4>Please, go ahead and type something in this box below</h4>
+          <input type="text" ng-model="data.message">
+          <h1>{{data.message}}</h1>
+        </div>
+      </div>
+    </div>
+
     
     <div class="row">
       <div class="large-12 columns">
@@ -159,6 +171,7 @@
     
     <script src="js/vendor/jquery.js"></script>
     <script src="js/foundation.min.js"></script>
+    <script src="js/angular.min.js">
     <script>
       $(document).foundation();
     </script>
