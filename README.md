@@ -1,4 +1,4 @@
-biodavidjm garbage-code collection
+Practice-Zone
 ============
 
 And here it is my collection of junk code, which helps me understand many useful things, most of them related directly or indirectly with the dictyBase. 
