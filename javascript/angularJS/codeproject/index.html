@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<script src="http://code.angularjs.org/angular-1.0.1.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
+		<script type="text/javascript" src="scripts/components.js"></script>
+	</head>
+	<body ng-app="myApp" ng-controller="myCtrl">
+		<h3>Plain Angular</h3>
+		{{customerName}}: <input ng-model="credit" />
+		<button ng-click="saveChanges('plain html')">Save</button>
+		
+		<h3>Custom Directive</h3>
+		<my-dir
+		name="{{customerName}}"
+		amount="credit"
+		save="saveChanges('custom directive')">
+		</my-dir>
+
+		
+
+	</body>
+</html>
