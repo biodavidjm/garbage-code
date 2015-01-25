@@ -9,14 +9,17 @@ print "------------------------------------\n";
 
 =begin
 
-Basic Methods
+# Check for documentation
+grep -rin `def link_to`
+
+# Basic Methods
 
     to_s converts things to strings.
     to_i converts things to integers (numbers.)
     to_a converts things to arrays.
 
-Files
-print File.read("/Home/comics.txt")
+# Files
+	print File.read("/Home/comics.txt")
 
 # Creating functions:
 def load_­comics(pat­h)
