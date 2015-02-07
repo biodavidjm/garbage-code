@@ -1,9 +1,21 @@
 package DavidFirstApp;
-use App::Cmd::Setup -app;
 
-package DavidFirstApp::Command::initialize;
-use DavidFirstApp -command;
+use Moose;
+extends qw(MooseX::App::Cmd);
 
+use Method::Signatures;
+use feature qw/say/;
+
+has data => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub {
+        [   qw/this and that/
+        ];
+    },
+    documentation =>
+        'what is the default and what it isnt'
+);
 
 # sub execute {
 # 	my ($self, $opt, $args) = @_;
