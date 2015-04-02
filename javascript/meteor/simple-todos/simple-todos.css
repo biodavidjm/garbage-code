@@ -17,6 +17,7 @@ body {
   font-size: 14px;
 }
 
+
 .container {
   max-width: 600px;
   margin: 0 auto;
@@ -29,6 +30,7 @@ header {
   background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
   padding: 20px 15px 15px 15px;
   position: relative;
+  text-align: center;
 }
 
 #login-buttons {
@@ -36,11 +38,14 @@ header {
 }
 
 h1 {
-  font-size: 1.5em;
+  /*font-size: 1.5em;*/
   margin: 0;
-  margin-bottom: 10px;
-  display: inline-block;
-  margin-right: 1em;
+  /*display: inline-block;*/
+  /*margin-right: 1em;*/
+}
+
+h6,h3,h4,h5{
+  margin: 5px;
 }
 
 form {
