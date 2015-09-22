@@ -1,0 +1,14 @@
+<div ng-repeat="post in posts">
+	<a href="{{ post.url }}" target="new"> {{ post.title}} </a>
+	<small><a ng-click="deletePost($index)" href="">delete</a></small>
+</div>
+
+<br><br>
+<form ng-submit="submitPost()">
+	<input type="text" ng-model="post.title">
+	<input type="text" ng-model="post.url">
+	<input type="submit" value="Add Post">
+</form>
+
+Posts: {{ posts }} <br>
+Post: {{ post }}
