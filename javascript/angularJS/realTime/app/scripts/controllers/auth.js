@@ -9,6 +9,8 @@ angular.module('realTimeApp')
 		$scope.login = function () {
 			Auth.login($scope.user).then(function () {
 				$location.path('/');
+			}, function (error) {
+				$scope.error = error.toString();
 			});
 		};
 
@@ -17,6 +19,8 @@ angular.module('realTimeApp')
 				return Auth.login($scope.user).then(function() {
 					$location.path('/');
 				});
+			}, function(error) {
+				$scope.error = error.toString();
 			});
 		};
 	});
