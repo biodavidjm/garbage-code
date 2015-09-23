@@ -24,9 +24,10 @@
 
 	<h5>All your bookmarks:</h5>
 	<div ng-repeat="post in posts">
-		<a href="{{ post.url }}" target="new"> 
+		<a ng-href="{{ post.url }}" target="new"> 
 			<h2>{{post.title | uppercase}}</h2>
 		</a>
+		<a ng-href="#/posts/{{ post.$id }}">Comments</a>
 		<small><a ng-click="deletePost(post)" href="">delete</a></small>
 	</div>
 
