@@ -1,6 +1,8 @@
 
 <div class="jumbotron">
 	<h1>Favorite Links</h1>
+	<br><br>
+	<h4>Also known as <em>bookmarks</em></h4>
 </div>
 
 
@@ -17,7 +19,7 @@
 
 <div ng-repeat="(postId, post) in posts">
 	<a href="{{ post.url }}" target="new"> 
-		<h2> {{post.title | uppercase}} </h2>
+		<h2>{{post.title | uppercase}}</h2>
 	</a>
 	<small><a ng-click="deletePost(postId)" href="">delete</a></small>
 </div>
