@@ -1,34 +1,22 @@
-<div class="container">
+<div class="container posts-page">
+  <div class="post row" ng-repeat="post in posts">
 
-	<div class="jumbotron">
-		<h1>Favorite Links</h1>
-		<br><br>
-		<h4>Also known as <em>bookmarks</em></h4>
-	</div>
+    <div class=" col-xs-1"></div>
+    <div class="col-md- col-xs-11">
 
+      <div class="info">
+        <a ng-href="{{ post.url }}">
+          {{ post.title }}
+          <span class="url">({{ post.url | hostnameFromUrl }})</span>
+        </a>
+      </div>
+      <div>
+        <span>submitted by <a ng-href="#/users/{{ post.creatorUID }}">{{ post.creator }}</a></span>
+        &mdash;
+        <a ng-href="#/posts/{{ post.$id }}">comments</a>
+        <a ng-click="deletePost(post)">delete</a>
+      </div>
+    </div>
 
-	<h5>Add your favorite internet resource:</h5>
-	<br>
-	<form ng-submit="submitPost()" name="theForm">
-		<label> Name of the website: 
-			<input type="text" ng-model="post.title" ng-minlength="1" required>
-		</label>
-		<label>
-			URL: <input type="url" name="input" value="post.url" ng-model="post.url" required>
-		</label>
-		<input type="submit" value="Add Link">
-	</form>
-
-	<br>
-	<br>
-
-	<h5>All your bookmarks:</h5>
-	<div ng-repeat="post in posts">
-		<a ng-href="{{ post.url }}" target="new"> 
-			<h2>{{post.title | uppercase}}</h2>
-		</a>
-		<a ng-href="#/posts/{{ post.$id }}">Comments</a>
-		<small><a ng-click="deletePost(post)" href="">delete</a></small>
-	</div>
-
+  </div>
 </div>
