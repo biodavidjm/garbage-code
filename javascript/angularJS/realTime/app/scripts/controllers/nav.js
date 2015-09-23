@@ -1,8 +1,12 @@
 'use strict';
 
 angular.module('realTimeApp')
-	.controller('NavCtrl', function($scope, $location, Post){
+	.controller('NavCtrl', function($scope, $location, Post, Auth){
 		$scope.post = {url: 'http://', title: ''};
+
+		$scope.signedIn = Auth.signedIn;
+
+		$scope.logout = Auth.logout;
 
 		$scope.submitPost = function () {
 			Post.create($scope.post).then(function(ref) {
