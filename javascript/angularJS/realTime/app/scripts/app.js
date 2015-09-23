@@ -16,8 +16,11 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'firebase'
   ])
+  // Constant for the firebase url, as it will be injected into the services or controllers
+  .constant('FIREBASE_URL', 'https://vivid-inferno-633.firebaseio.com')
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
