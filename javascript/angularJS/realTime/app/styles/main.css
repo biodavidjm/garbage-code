@@ -10,6 +10,12 @@ h1,h2,h3,h4,h5 {
   min-height: 300px;
 }
 
+.hideMessage {
+  font-size: 10px;
+  color: #DF3A01;
+  text-align: right;
+}
+
 /*LINKS*/
 
 a.delete:link {

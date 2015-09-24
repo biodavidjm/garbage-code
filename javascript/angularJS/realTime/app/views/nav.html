@@ -1,3 +1,6 @@
+<div ng-controller="NavCtrl"  ng-hide="signedIn()" class="hideMessage">
+  Hola! Please, login/register to add your favorite sites!
+</div>
 <nav class="navbar navbar-default" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
@@ -11,6 +14,7 @@
   </div>
 
   <!-- Collect the nav links, forms, and other content for toggling -->
+  
   <div ng-controller="NavCtrl" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <form class="navbar-form navbar-left" role="search" ng-submit="submitPost()" ng-show="signedIn()">
       <div class="form-group">
