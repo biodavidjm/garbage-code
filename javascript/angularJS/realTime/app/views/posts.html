@@ -7,9 +7,8 @@
     <div class="col-xs-11">
 
       <div class="info">
-        <a ng-href="{{ post.url }}">
-          {{ post.title }}
-        </a> <span class="url">({{ post.url | hostnameFromUrl }})</span>
+        <a ng-href="{{ post.url }}" target="new">{{ post.title }}</a> 
+        <span class="url">({{ post.url | hostnameFromUrl }})</span>
       </div>
       <div>
         <span>submitted by <a ng-href="#/users/{{ post.creatorUID }}">{{ post.creator }}</a></span>
