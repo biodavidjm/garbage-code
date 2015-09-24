@@ -47,9 +47,16 @@ a.delete:active {
 }
 
 
+/*COMMENTS PAGE (VIEW SHOWPOST)*/ 
+
+.enterBtn {
+  text-align: right;
+  padding-top: 5px;
+}
+
 /* MAIN POSTS PAGE */
 .post {
-  background: #fff;
+  background: #FBF8EF;
   padding:15px 0;
   -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
   -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);

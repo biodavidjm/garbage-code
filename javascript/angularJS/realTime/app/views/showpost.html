@@ -1,5 +1,72 @@
-<div>
-	<h3><a ng-href="{{ post.url }}" target="new"> {{post.title}} </a></h3>
+<div class="container posts-page">
+
+  <div class="post row">
+    
+    <div class="col-xs-12">
+      <div class="info">
+      	<h2><a ng-href="{{ post.url }}" target="new"> {{post.title}} </a></h2>
+        <span class="url">({{ post.url}})</span>
+      </div> <!-- info -->
+
+      <div>
+        <span>
+          submitted by
+          <a ng-href="#/users/{{ post.creatorUID }}">
+            {{ post.creator }}
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+	
+	<br>
+
+  <div>
+  	<p><h4>Comments by users about the site:</h4></p>
+  </div>
+
+  <!-- Show the comments -->
+  <div ng-repeat="comment in comments" class="row cmt">
+	<div class="col-xs-1"></div>
+    <div class="col-xs-10">
+      <span>{{ comment.text }}</span>
+      <span class="author">posted by
+        <a ng-href="#/users/{{ comment.creatorUID }}">
+          {{ comment.creator }}
+        </a>
+      </span>
+    </div> <!-- col -->
+    <div class="col-xs-1"></div>
+  </div> <!-- ng-repeat row cmt-->
+
+  <!-- FORM to post a comment -->
+  <div class="cmt-form">
+    <!-- 1. if you are not loggedin, please do it -->
+    <div ng-hide="signedIn()">
+      <p><a href="#/login">Sign in</a> to post a comment</p>
+    </div>
+
+    <!-- 2 Once logged in, post a comment -->
+
+    <form ng-show="signedIn()" ng-submit="addComment()">
+
+      <textarea 
+        ng-model="commentText"
+        placeholder="Post a NEW Comment"
+        class="form-control">
+      </textarea>
+      <div class="enterBtn">
+      	<input type="submit" value="ENTER" class="btn btn-sm btn-success">
+      </div>
+      
+    </form>
+  
+  </div> <!-- cmt-form -->
+
 </div>
+
 <br>
-<a ng-href="#/posts"> Back to Posts </a>
+
+<div>
+	<a ng-href="#/posts"> Back to Posts </a>
+</div>
