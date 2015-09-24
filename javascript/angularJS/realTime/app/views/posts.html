@@ -1,11 +1,10 @@
-<div class="container posts-page">
+<div class="container house">
 
-  <p><h4>List of ShaYoBos:</h4></p>
-  <br>
+  <p><h4>List of <strong><em>ShaYoBos</em></strong>:</h4></p>
+  
   <div class="post row" ng-repeat="post in posts">
 
-    <div class="col-xs-1"></div>
-    <div class="col-xs-11">
+    <div class="col-xs-12">
 
       <div class="info">
         <a ng-href="{{ post.url }}" target="new">{{ post.title }}</a> 
@@ -15,7 +14,7 @@
         <span>submitted by <a ng-href="#/users/{{ post.creatorUID }}">{{ post.creator }}</a></span>
         &mdash;
         <a ng-href="#/posts/{{ post.$id }}">comments</a>
-         [<a ng-click="deletePost(post)" ng-show="user.uid === post.creatorUID">delete</a>]
+         <a class="delete" href="" ng-click="deletePost(post)" ng-show="user.uid === post.creatorUID">[delete]</a>
       </div>
     </div>
 

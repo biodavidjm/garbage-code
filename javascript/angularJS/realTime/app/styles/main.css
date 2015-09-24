@@ -6,10 +6,36 @@ h1,h2,h3,h4,h5 {
  display: inline;
 }
 
+.house {
+  min-height: 300px;
+}
+
+/*LINKS*/
+
+a.delete:link {
+  color:red; 
+}
+a.delete:visited {
+  color:red;  
+}
+a.delete:hover {
+  color:red;
+}
+a.delete:active {
+  color:red;
+}
+
+
 /*HEADER*/
 
 .header {
-  padding: 10px 0px 20px 0px;
+  padding: 10px 0px 10px 0px;
+  text-align: right;
+  font-style: italic; 
+}
+
+.subHeader {
+  padding-bottom: 20px;
 }
 /* NAV BAR */
 .nav-pic {
