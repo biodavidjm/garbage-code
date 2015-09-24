@@ -24,4 +24,8 @@ angular.module('realTimeApp')
 
 			$scope.commentText = '';
 		};
+
+		$scope.deleteComment = function (comment) {
+			$scope.comments.$remove(comment);
+		};
 	});

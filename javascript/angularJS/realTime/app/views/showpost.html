@@ -35,6 +35,13 @@
           {{ comment.creator }}
         </a>
       </span>
+      <span>
+      	<a class="delete"
+      		href="" 
+      		ng-click="deleteComment(comment)" 
+      		ng-show="signedIn() && comment.creatorUID === user.uid"
+      	>[delete]</a>
+      </span>
     </div> <!-- col -->
     <div class="col-xs-1"></div>
   </div> <!-- ng-repeat row cmt-->
