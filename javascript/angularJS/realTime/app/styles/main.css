@@ -43,6 +43,13 @@ a.delete:active {
 .subHeader {
   padding-bottom: 20px;
 }
+
+/*FOOTER*/
+
+.footer {
+  text-align: right;
+}
+
 /* NAV BAR */
 .nav-pic {
   margin: -2px 5px 0 0;
