@@ -16,6 +16,15 @@ h1,h2,h3,h4,h5 {
   text-align: right;
 }
 
+/*REGISTER / login */
+
+
+
+.regBox {
+  padding: 10px 0px 10px 0px;
+  color: grey;
+  font-size: 10px;
+}
 /*LINKS*/
 
 a.delete:link {
